@@ -363,7 +363,8 @@ void Backup(int bf,bool echo)
     
     string Real = name[bf].real;
     if(isFileLock)
-    	Real+="\\1临时文件夹"; 
+    	Real+="\\1临时文件夹";
+    
 	if(echo) command=yasuo+" a -t7z"+" -mx="+lv+" "+tmp+" \""+Real+"\"\\*";
 	else command=yasuo+" a -t7z"+" -mx="+lv+" "+tmp+" \""+Real+"\"\\* > nul 2>&1";
 //	cout<< endl << command <<endl;//debug 
@@ -415,65 +416,65 @@ string FindName(string target)
 				findpath = findpath + "\\" + folderName + "\\MCGame";
 			std::vector<std::string> subdirectories2;
 			listSubdirectories(findpath, subdirectories2);
-			for (const auto& folderName : subdirectories2)
+			for (const auto& folderName : subdirectories2)//要找遍每一个文件夹 
 			{
 				findpath = findpath + "\\" + folderName;
-			}
-			DIR* directory = opendir(findpath.c_str());
-		    File files;
-		    struct dirent* entry;
-		    while ((entry = readdir(directory))) {
-		        string fileName = entry->d_name;
-		        string filePath = findpath + "\\" + fileName;
-		        struct stat fileStat;
-		        if (stat(filePath.c_str(), &fileStat) != -1) {
-		            if (S_ISREG(fileStat.st_mode)) { // Only regular files are processed
-						ifstream file;
-						file.open(filePath);
-						string s;
-						int lines=0;
-						while (getline(file, s))
-						{
-							++lines;
-							if(lines==2)
-								result+=s;
-							if(lines==3)
-								result+=s;
-							if(lines==5)
+				DIR* directory = opendir(findpath.c_str());
+			    File files;
+			    struct dirent* entry;
+			    while ((entry = readdir(directory))) {
+			        string fileName = entry->d_name;
+			        string filePath = findpath + "\\" + fileName;
+			        struct stat fileStat;
+			        if (stat(filePath.c_str(), &fileStat) != -1) {
+			            if (S_ISREG(fileStat.st_mode)) { // Only regular files are processed
+							ifstream file;
+							file.open(filePath);
+							string s;
+							int lines=0;
+							while (getline(file, s))
 							{
-								result += "存档版本：";
-								for(int i = 17;i < s.size();++i)
+								++lines;
+								if(lines==2)
+									result+=s;
+								if(lines==3)
+									result+=s;
+								if(lines==5)
 								{
-									if(s[i] == '0' && s[i-1] != '0')
-										result += '.';
-									else if(s[i] == '0'){}
-									else result += s[i];
-								}
-								if(result.back() == '.')
-									result += "基岩版";
-							}
-							if(lines==25)
-							{
-								bool iftarget=true;
-								//判断target和当前是否一致 
-								for(int j=0;j<target.size();++j){
-									if(target[j]!=s[j+11])
+									result += "存档版本：";
+									for(int i = 17;i < s.size();++i)
 									{
-										iftarget=false;
-										break;
+										if(s[i] == '0' && s[i-1] != '0')
+											result += '.';
+										else if(s[i] == '0'){}
+										else result += s[i];
 									}
+									if(result.back() == '.')
+										result += "基岩版";
 								}
-								if(iftarget)
-									return result;
-								else
-									return "未匹配原始名称";
+								if(lines==25)
+								{
+									bool iftarget=true;
+									//判断target和当前是否一致 
+									for(int j=0;j<target.size();++j){
+										if(target[j]!=s[j+11])
+										{
+											iftarget=false;
+											break;
+										}
+									}
+									if(iftarget)
+										return result;
+									else
+										break;
+								}
 							}
-						}
-						file.close();
-		            }
-		        }
-		    }
-		    closedir(directory);
+							file.close();
+			            }
+			        }
+			    }
+			    closedir(directory);
+			}
 		}
 	}
 	freopen("CON","r",stdin);
