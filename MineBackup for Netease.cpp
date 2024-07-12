@@ -11,7 +11,7 @@
 #include <windows.h> 
 using namespace std;
 string Gpath,Gpath2[100];
-void sprint(string s,int time)//ÑÓ³ÙÊä³ö 
+void sprint(string s,int time)//å»¶è¿Ÿè¾“å‡º 
 {
 	int len=s.size();
 	for(int i=0;i<len;i++)
@@ -26,7 +26,7 @@ void sprint(string s,int time)//ÑÓ³ÙÊä³ö
 	}
 }
 
-inline void neglect(int x)//¶ÁÈ¡ºöÂÔ x ĞĞ 
+inline void neglect(int x)//è¯»å–å¿½ç•¥ x è¡Œ 
 {
 	int num;
 	char ch;
@@ -44,7 +44,7 @@ inline void neglect(int x)//¶ÁÈ¡ºöÂÔ x ĞĞ
 	 } */
 }
 
-bool isDirectory(const std::string& path)//Ñ°ÕÒÎÄ¼ş¼Ğ 
+bool isDirectory(const std::string& path)//å¯»æ‰¾æ–‡ä»¶å¤¹ 
 {
 #ifdef _WIN32
     DWORD attr = GetFileAttributes(path.c_str());
@@ -60,7 +60,7 @@ bool isDirectory(const std::string& path)//Ñ°ÕÒÎÄ¼ş¼Ğ
 #endif
 }
 
-//ÁĞ³ö×ÓÎÄ¼ş¼Ğ 
+//åˆ—å‡ºå­æ–‡ä»¶å¤¹ 
 void listSubdirectories(const std::string& folderPath, std::vector<std::string>& subdirectories)
 {
 #ifdef _WIN32
@@ -93,7 +93,7 @@ void listSubdirectories(const std::string& folderPath, std::vector<std::string>&
     }
 #endif
 }
-//»ñÈ¡ÎÄ¼ş¼Ğ×î½üĞŞ¸ÄÊ±¼ä 
+//è·å–æ–‡ä»¶å¤¹æœ€è¿‘ä¿®æ”¹æ—¶é—´ 
 string getModificationDate(const std::string& filePath)//Folder modification date
 {
     string modificationDate;
@@ -131,7 +131,7 @@ string getModificationDate(const std::string& filePath)//Folder modification dat
     return modificationDate;
 }
 string temp[100];
-//ÁĞ³öÎÄ¼ş¼ĞÄÚµÄÎÄ¼ş 
+//åˆ—å‡ºæ–‡ä»¶å¤¹å†…çš„æ–‡ä»¶ 
 void ListFiles(const std::string& folderPath) {
     std::string searchPath = folderPath + "\\*.*";
 
@@ -149,7 +149,7 @@ void ListFiles(const std::string& folderPath) {
         FindClose(hFind);
     }
 }
-//Ô¤¶ÁÈ¡£¨Ö±µ½: 
+//é¢„è¯»å–ï¼ˆç›´åˆ°: 
 void Qread()
 {
 	char ch;
@@ -157,7 +157,7 @@ void Qread()
 	while(ch!=':') ch=getchar();
 	return ;
 }
-//»ñÈ¡×¢²á±íµÄÖµ 
+//è·å–æ³¨å†Œè¡¨çš„å€¼ 
 string GetRegistryValue(const std::string& keyPath, const std::string& valueName)
 {
     HKEY hKey;
@@ -177,15 +177,15 @@ struct names{
 	string real,alias;
 	int x;
 }name[100];
-string rname2[20],Bpath,command,yasuo,lv;//´æµµÕæÊµÃû ±¸·İÎÄ¼ş¼ĞÂ·¾¶ cmdÖ¸Áî 7-ZipÂ·¾¶ Ñ¹ËõµÈ¼¶ 
-bool prebf,ontop,choice,echos;//»ØµµÇ°±¸·İ ¹¤¾ßÏäÖÃ¶¥ ÊÖ¶¯Ñ¡Ôñ »ØÏÔ 
+string rname2[20],Bpath,command,yasuo,lv;//å­˜æ¡£çœŸå®å å¤‡ä»½æ–‡ä»¶å¤¹è·¯å¾„ cmdæŒ‡ä»¤ 7-Zipè·¯å¾„ å‹ç¼©ç­‰çº§ 
+bool prebf,ontop,choice,echos;//å›æ¡£å‰å¤‡ä»½ å·¥å…·ç®±ç½®é¡¶ æ‰‹åŠ¨é€‰æ‹© å›æ˜¾ 
 int limitnum;
 HWND hwnd;
 struct File {
     string name;
     time_t modifiedTime;
 };
-//ÅĞ¶ÏÎÄ¼şÊÇ·ñ±»Õ¼ÓÃ 
+//åˆ¤æ–­æ–‡ä»¶æ˜¯å¦è¢«å ç”¨ 
 bool isFileLocked(const string& filePath)
 {
     HANDLE hFile = CreateFile(filePath.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_SHARE_READ, NULL);
@@ -193,22 +193,22 @@ bool isFileLocked(const string& filePath)
     if (hFile == INVALID_HANDLE_VALUE)
     {
         DWORD error = GetLastError();
-        // Èç¹ûÎÄ¼şÕı±»ÁíÒ»¸ö½ø³ÌÒÔ¶ÀÕ¼·½Ê½´ò¿ª£¬Ôò»á·µ»ØERROR_SHARING_VIOLATION´íÎó¡£
+        // å¦‚æœæ–‡ä»¶æ­£è¢«å¦ä¸€ä¸ªè¿›ç¨‹ä»¥ç‹¬å æ–¹å¼æ‰“å¼€ï¼Œåˆ™ä¼šè¿”å›ERROR_SHARING_VIOLATIONé”™è¯¯ã€‚
         if (error == ERROR_SHARING_VIOLATION)
             return true;
-        // ÆäËû´íÎóÇé¿öĞèÒª¸ù¾İÊµ¼ÊÇé¿ö´¦Àí
+        // å…¶ä»–é”™è¯¯æƒ…å†µéœ€è¦æ ¹æ®å®é™…æƒ…å†µå¤„ç†
         else
             return false;
     }
     else
     {
         CloseHandle(hFile);
-        // ÎÄ¼ş³É¹¦´ò¿ªÇÒ¹Ø±Õ£¬±íÃ÷µ±Ç°Ã»ÓĞ±»Õ¼ÓÃ£¨ÖÁÉÙÔÚÕâ¸öË²¼ä£©
+        // æ–‡ä»¶æˆåŠŸæ‰“å¼€ä¸”å…³é—­ï¼Œè¡¨æ˜å½“å‰æ²¡æœ‰è¢«å ç”¨ï¼ˆè‡³å°‘åœ¨è¿™ä¸ªç¬é—´ï¼‰
         return false;
     }
 }
 
-//´æµµÎÄ¼ş¼ĞÂ·¾¶Ô¤´¦Àí 
+//å­˜æ¡£æ–‡ä»¶å¤¹è·¯å¾„é¢„å¤„ç† 
 int PreSolve(string s)
 {
 	int len=s.size(),tt=0;
@@ -223,7 +223,7 @@ int PreSolve(string s)
 	}
 	return tt;
 }
-//¼ìÑé±ğÃûºÏÀíĞÔ
+//æ£€éªŒåˆ«ååˆç†æ€§
 bool checkupName(string Name)
 {
 	int len=Name.size();
@@ -232,7 +232,7 @@ bool checkupName(string Name)
 			return false;
 	return true;
 }
-//¼ì²â±¸·İÊıÁ¿
+//æ£€æµ‹å¤‡ä»½æ•°é‡
 void checkup(string folderPath,int limit)
 {
 	if(limit==0) return ;
@@ -247,20 +247,20 @@ void checkup(string folderPath,int limit)
 		struct stat fileStat;
 		stat(filePath.c_str(), &fileStat);
     	if (S_ISREG(fileStat.st_mode)) {
-    		++checknum;//Èç¹ûÊÇ³£¹æÎÄ¼ş£¬Í³¼Æ×Ü±¸·İÊı 
+    		++checknum;//å¦‚æœæ˜¯å¸¸è§„æ–‡ä»¶ï¼Œç»Ÿè®¡æ€»å¤‡ä»½æ•° 
     	}
     }
     closedir(directory);
     struct dirent* entry2;
     while (checknum > limit)
     {
-    	directory = opendir(folderPath.c_str());//·ÅÍâÃæ»áÔì³É¶ÁÈ¡ÖØ¸´£¬Ö»»áÉ¾³ıÒ»´Î£¬ºóÃæ¶¼ÕÒ²»µ½ 
+    	directory = opendir(folderPath.c_str());//æ”¾å¤–é¢ä¼šé€ æˆè¯»å–é‡å¤ï¼Œåªä¼šåˆ é™¤ä¸€æ¬¡ï¼Œåé¢éƒ½æ‰¾ä¸åˆ° 
 		bool fl=0;
 		while ((entry2 = readdir(directory))) {
 		    string fileName = entry2->d_name;
 		    string filePath = folderPath + fileName;
 		    struct stat fileStat;
-		    if(!fl) files.modifiedTime=fileStat.st_mtime,fl=1; //ÖØÖÃfiles 
+		    if(!fl) files.modifiedTime=fileStat.st_mtime,fl=1; //é‡ç½®files 
 		    if (stat(filePath.c_str(), &fileStat) != -1) {
 		    	if (S_ISREG(fileStat.st_mode)) {
 			        File file;
@@ -280,26 +280,75 @@ void checkup(string folderPath,int limit)
 	}
 	return ;
 }
-//±¸·İº¯Êı 
+//å¤‡ä»½å‡½æ•° 
+//å¤‡ä»½å‡½æ•° 
 void Backup(int bf,bool echo)
 {
 	string folderName = Bpath + "\\" + name[bf].alias; // Set folder name
 	// Create a folder using mkdir ()
 	mkdir(folderName.c_str());
-	bool isFileLock=0;
 	
+	bool isFileLock = 0;
 	if(isFileLocked(name[bf].real+"\\region\\r.0.0.mca"))
 	{
-		printf("¼ì²âµ½¸Ã´æµµÎª´ò¿ª×´Ì¬£¬ÒÑÔÚ¸Ã´æµµÏÂ´´½¨ÁÙÊ±ÎÄ¼ş¼Ğ¡£\n\nÇëÏÈ½«´æµµÎÄ¼ş¼ĞÖĞËùÓĞÎÄ¼ş¸´ÖÆµ½[1ÁÙÊ±ÎÄ¼ş¼Ğ]ÖĞ£¬\nÈ»ºó°´ÏÂ 1/0 À´¿ªÊ¼/È¡Ïû±¸·İ\n");
-		string folderName2 = name[bf].real + "\\1ÁÙÊ±ÎÄ¼ş¼Ğ";
-		mkdir(folderName2.c_str());
-		command = "start " + name[bf].real;
+		isFileLock = true; 
+		printf("æ£€æµ‹åˆ°è¯¥å­˜æ¡£ä¸ºæ‰“å¼€çŠ¶æ€ï¼Œå·²åœ¨è¯¥å­˜æ¡£ä¸‹åˆ›å»ºä¸´æ—¶æ–‡ä»¶å¤¹ã€‚\n\næ­£åœ¨å°†å­˜æ¡£æ–‡ä»¶å¤¹ä¸­æ‰€æœ‰æ–‡ä»¶å¤åˆ¶åˆ°[1ä¸´æ—¶æ–‡ä»¶å¤¹]ä¸­ï¼Œç„¶åå¼€å§‹å¤‡ä»½\næ­¤è¿‡ç¨‹ä¸­è¯·ä¸è¦éšæ„ç‚¹å‡»\n");
+		command = "start \"\"  \"" + name[bf].real + "\"";//è¿™æ ·æ‰“å¼€ä¸ä¼šæŠ¥é”™ 
 		system(command.c_str());
-		char ch;
-		ch=getch();
-		if(ch=='1')
-			isFileLock=1;
-		else return ;
+		Sleep(2000);
+	    keybd_event(0x11, 0, 0, 0);//Ctrl
+		keybd_event(0x41, 0, 0, 0);//A
+		keybd_event(0x41, 0, KEYEVENTF_KEYUP, 0);
+		keybd_event(0x43, 0, 0, 0);//C
+		keybd_event(0x43, 0, KEYEVENTF_KEYUP, 0);
+		keybd_event(0x11, 0, KEYEVENTF_KEYUP, 0);
+		Sleep(500);
+		string folderName2 = name[bf].real + "\\1ä¸´æ—¶æ–‡ä»¶å¤¹";
+		mkdir(folderName2.c_str());
+		command = "start \"\"  \"" + folderName2 + "\"";
+		system(command.c_str());
+		Sleep(500);
+		keybd_event(0x11, 0, 0, 0);//Ctrl
+		keybd_event(0x56, 0, 0, 0);//V
+		keybd_event(0x56, 0, KEYEVENTF_KEYUP, 0);//V 
+		keybd_event(0x11, 0, KEYEVENTF_KEYUP, 0);//Ctrl
+		Sleep(2000);
+		keybd_event(0x12, 0, 0, 0);//Alt 
+		keybd_event(0x53, 0, 0, 0);//Skip
+		keybd_event(0x53, 0, KEYEVENTF_KEYUP, 0);
+		keybd_event(0x12, 0, KEYEVENTF_KEYUP, 0);
+	    // è·å–å¤åˆ¶è¿›åº¦çª—å£çš„å¥æŸ„
+//	    Sleep(10);
+	    HWND hForegroundWindow = GetForegroundWindow();
+	    cout << "æ­£åœ¨å¤åˆ¶..." << endl;
+	    // å¾ªç¯æ£€æŸ¥çª—å£æ˜¯å¦è¿˜å­˜åœ¨
+	    int sumtime=0;
+	    while (true) {
+	        // ç­‰å¾…ä¸€æ®µæ—¶é—´å†æ£€æŸ¥ï¼Œé¿å…é«˜CPUå ç”¨
+	        Sleep(2000); // ç­‰å¾…2ç§’
+	        sumtime+=2;
+	        // æ£€æŸ¥çª—å£æ˜¯å¦ä»ç„¶æœ‰æ•ˆ æˆ–è€… å¤åˆ¶å¤ªå¿«äº†æ ¹æœ¬æ²¡æŠ“åˆ°çª—å£ 
+	        if (!IsWindow(hForegroundWindow) || sumtime > 10)
+	        {
+	        	cout << "æ–‡ä»¶å¤åˆ¶å®Œæˆ" << endl;
+	        	break; // çª—å£å…³é—­ï¼Œé€€å‡ºå¾ªç¯
+			}
+	    }
+		Sleep(1000); 
+		keybd_event(0x01, 0, 0, 0);//å·¦é”® 
+		keybd_event(0x01, 0, KEYEVENTF_KEYUP, 0);
+		keybd_event(0x12, 0, 0, 0);//Alt 
+		keybd_event(0x73, 0, 0, 0);//F4
+		Sleep(100);
+		keybd_event(0x01, 0, 0, 0);//å·¦é”® 
+		keybd_event(0x01, 0, KEYEVENTF_KEYUP, 0);
+		keybd_event(0x73, 0, 0, 0);//F4
+		keybd_event(0x73, 0, KEYEVENTF_KEYUP, 0);
+		keybd_event(0x12, 0, KEYEVENTF_KEYUP, 0);
+	}
+	else //è®°å½•ä¸€ä¸‹å¤‡ä»½æ—¶åŒºå—ä¿®æ”¹æ—¶é—´ï¼Œæ–¹ä¾¿ä»¥åå¿«é€Ÿå‹ç¼©çš„æ„å»º 
+	{
+		//ç°åœ¨åœ¨QuickBackupä¸­æ‰è®°å½• 
 	}
 	
 	time_t now = time(0);
@@ -314,11 +363,10 @@ void Backup(int bf,bool echo)
     
     string Real = name[bf].real;
     if(isFileLock)
-    	Real+="\\1ÁÙÊ±ÎÄ¼ş¼Ğ"; 
-    
-	if(echo) command=yasuo+" a -t7z -mx="+lv+" "+tmp+" \""+Real+"\"\\*";
-	else command=yasuo+" a -t7z -bd -mx="+lv+" "+tmp+" \""+Real+"\"\\* > nul 2>&1";
-	cout<< endl << command <<endl;//debug 
+    	Real+="\\1ä¸´æ—¶æ–‡ä»¶å¤¹"; 
+	if(echo) command=yasuo+" a -t7z"+" -mx="+lv+" "+tmp+" \""+Real+"\"\\*";
+	else command=yasuo+" a -t7z"+" -mx="+lv+" "+tmp+" \""+Real+"\"\\* > nul 2>&1";
+//	cout<< endl << command <<endl;//debug 
 	system(command.c_str());
 	if(echo) command="move "+tmp+".7z "+folderName;
 	else command="move "+tmp+".7z "+folderName+" > nul 2>&1";
@@ -327,38 +375,123 @@ void Backup(int bf,bool echo)
 	
 	if(isFileLock)
 	{
-		command = "rmdir /S /Q " + Real;
+		command = "rmdir /S /Q \"" + Real + "\"";
 		system(command.c_str());
 	}
-	
+//	freopen("CON","w",stdout);
 	return ;
 }
 
-//ÇÉÃîµØ·µ»Ø»·¾³±äÁ¿ 
-string GetSpPath(string sp)
+//å¤„ç†å¯ä»¥ä».configé‡Œè¯»å–çš„å­˜æ¡£æ–‡ä»¶å¤¹åç§°
+string FindName(string target)
 {
-	freopen("temp","w",stdout);
-	system(sp.c_str());
-	ifstream tmp("temp");
-	freopen("CON","w",stdout);
-	string ans;
-	getline(tmp, ans, '\n');
-//    system("del temp"); ÕâÑù»áµ¼ÖÂfreopen³ö´í 
-	return ans;
+	/*ç‰ˆæœ¬æ˜ å°„
+    "1007010": "1.7.10",
+    "1008000": "1.8",
+    "1008008": "1.8.8",
+    "1008009": "1.8.9",
+    "1009004": "1.9.4",
+    "1010002": "1.10.2",
+    "1011002": "1.11.2",
+    "1012002": "1.12.2",
+    "1013002": "1.13.2",
+    "1014003": "1.14.3",
+    "1015000": "1.15",
+    "1016000": "1.16",
+    "1018000": "1.18",
+    "100000000": "åŸºå²©ç‰ˆ"
+	*/
+	string result="";
+	string findpath=GetRegistryValue("Software\\Netease\\MCLauncher", "DownloadPath") + "\\Game";
+	std::vector<std::string> subdirectories;
+	listSubdirectories(findpath, subdirectories);
+	for (const auto& folderName : subdirectories)
+	{
+		if(folderName[0]!='.') //è¯´æ˜è¿™æ˜¯é‚®ç®±æ–‡ä»¶å¤¹ï¼Œä½†æ˜¯å¯èƒ½æœ‰å¤šä¸ªï¼Œæ‰€ä»¥è¦å¾ªç¯
+		{
+			if(target[0] == 'L') //è¯´æ˜æ˜¯è”æœºå­˜æ¡£ 
+				findpath = findpath + "\\" + folderName + "\\LanGameHost";
+			else 
+				findpath = findpath + "\\" + folderName + "\\MCGame";
+			std::vector<std::string> subdirectories2;
+			listSubdirectories(findpath, subdirectories2);
+			for (const auto& folderName : subdirectories2)
+			{
+				findpath = findpath + "\\" + folderName;
+			}
+			DIR* directory = opendir(findpath.c_str());
+		    File files;
+		    struct dirent* entry;
+		    while ((entry = readdir(directory))) {
+		        string fileName = entry->d_name;
+		        string filePath = findpath + "\\" + fileName;
+		        struct stat fileStat;
+		        if (stat(filePath.c_str(), &fileStat) != -1) {
+		            if (S_ISREG(fileStat.st_mode)) { // Only regular files are processed
+						ifstream file;
+						file.open(filePath);
+						string s;
+						int lines=0;
+						while (getline(file, s))
+						{
+							++lines;
+							if(lines==2)
+								result+=s;
+							if(lines==3)
+								result+=s;
+							if(lines==5)
+							{
+								result += "å­˜æ¡£ç‰ˆæœ¬ï¼š";
+								for(int i = 17;i < s.size();++i)
+								{
+									if(s[i] == '0' && s[i-1] != '0')
+										result += '.';
+									else if(s[i] == '0'){}
+									else result += s[i];
+								}
+								if(result.back() == '.')
+									result += "åŸºå²©ç‰ˆ";
+							}
+							if(lines==25)
+							{
+								bool iftarget=true;
+								//åˆ¤æ–­targetå’Œå½“å‰æ˜¯å¦ä¸€è‡´ 
+								for(int j=0;j<target.size();++j){
+									if(target[j]!=s[j+11])
+									{
+										iftarget=false;
+										break;
+									}
+								}
+								if(iftarget)
+									return result;
+								else
+									return "æœªåŒ¹é…åŸå§‹åç§°";
+							}
+						}
+						file.close();
+		            }
+		        }
+		    }
+		    closedir(directory);
+		}
+	}
+	freopen("CON","r",stdin);
+	return "æœªåŒ¹é…åŸå§‹åç§°";
 }
 
-//³õÊ¼ÉèÖÃ/¸üĞÂÉèÖÃ 
+//åˆå§‹è®¾ç½®/æ›´æ–°è®¾ç½® 
 void SetConfig(string filename, bool ifreset, int summ)
 {
-	//ÏÖÔÚ½«´´½¨ÅäÖÃÎÄ¼şÕûºÏÎªÒ»¸öº¯Êı SetConfig() 
+	//ç°åœ¨å°†åˆ›å»ºé…ç½®æ–‡ä»¶æ•´åˆä¸ºä¸€ä¸ªå‡½æ•° SetConfig() 
 	freopen("CON","r",stdin);
-	printf("\nÕıÔÚ½¨Á¢ÅäÖÃÎÄ¼ş......\n"); 
+	printf("\næ­£åœ¨å»ºç«‹é…ç½®æ–‡ä»¶......\n"); 
 	ofstream newFile(filename);
 	if(ifreset)
 	{
-		printf("ÇëÊäÈë´æµµÎÄ¼ş¼ĞµÄ´¢´æÂ·¾¶ (¶à¸öÎÄ¼ş¼ĞÂ·¾¶¼äÓÃ$·Ö¸ô): ");
+		printf("è¯·è¾“å…¥å­˜æ¡£æ–‡ä»¶å¤¹çš„å‚¨å­˜è·¯å¾„ (å¤šä¸ªæ–‡ä»¶å¤¹è·¯å¾„é—´ç”¨$åˆ†éš”): ");
 		getline(cin,Gpath);
-		printf("ÇëÊäÈë´æµµ±¸·İ´æ´¢Â·¾¶:");
+		printf("è¯·è¾“å…¥å­˜æ¡£å¤‡ä»½å­˜å‚¨è·¯å¾„:");
 		getline(cin,Bpath);
 		summ=PreSolve(Gpath);
 	}
@@ -371,27 +504,27 @@ void SetConfig(string filename, bool ifreset, int summ)
 	}	
 	
     if (newFile.is_open()) {
-    	newFile << "Ê¹ÓÃµÄÅäÖÃÎÄ¼şĞòºÅ:0" << endl;
-    	newFile << "´æµµÎÄ¼ş¼ĞÂ·¾¶:" << Gpath << endl;//new
-        newFile << "´æµµ±¸·İ´æ´¢Â·¾¶:" << Bpath << endl;
+    	newFile << "ä½¿ç”¨çš„é…ç½®æ–‡ä»¶åºå·:0" << endl;
+    	newFile << "å­˜æ¡£æ–‡ä»¶å¤¹è·¯å¾„:" << Gpath << endl;//new
+        newFile << "å­˜æ¡£å¤‡ä»½å­˜å‚¨è·¯å¾„:" << Bpath << endl;
 		string keyPath = "Software\\7-Zip"; 
 		string valueName = "Path";
 		string softw=GetRegistryValue(keyPath, valueName),softww="";
 		for(int i=0;i<softw.size();++i)
 			if(softw[i]==' ') softww+='"',softww+=' ',softww+='"';
 			else softww+=softw[i];
-        newFile << "Ñ¹ËõÈí¼şÂ·¾¶:" << softww+"7z.exe" << endl;
-        newFile << "±¸·İÇ°ÏÈ»¹Ô­:0" << endl;
-        newFile << "¹¤¾ßÏäÖÃ¶¥:0" << endl;
-        newFile << "ÊÖ¶¯Ñ¡Ôñ»¹Ô­(Ä¬ÈÏÑ¡×îĞÂ):0" << endl;
-        newFile << "¹ı³ÌÏÔÊ¾:1" << endl;
-        newFile << "Ñ¹ËõµÈ¼¶:5" << endl;
-        newFile << "±£ÁôµÄ±¸·İÊıÁ¿(0±íÊ¾²»ÏŞÖÆ):0" << endl; 
+        newFile << "å‹ç¼©è½¯ä»¶è·¯å¾„:" << softww+"7z.exe" << endl;
+        newFile << "å¤‡ä»½å‰å…ˆè¿˜åŸ:0" << endl;
+        newFile << "å·¥å…·ç®±ç½®é¡¶:0" << endl;
+        newFile << "æ‰‹åŠ¨é€‰æ‹©è¿˜åŸ(é»˜è®¤é€‰æœ€æ–°):0" << endl;
+        newFile << "è¿‡ç¨‹æ˜¾ç¤º:1" << endl;
+        newFile << "å‹ç¼©ç­‰çº§:5" << endl;
+        newFile << "ä¿ç•™çš„å¤‡ä»½æ•°é‡(0è¡¨ç¤ºä¸é™åˆ¶):0" << endl; 
 	}
-	printf("\nÓĞÒÔÏÂ´æµµÎÄ¼ş¼Ğ:\n\n"); 
+	printf("\næœ‰ä»¥ä¸‹å­˜æ¡£æ–‡ä»¶å¤¹:\n\n"); 
 	for(int i=0;i<=summ;++i)
 	{
-		bool ifalias=true; // ÊÇ·ñÊÖ¶¯ÉèÖÃ±ğÃû 
+		bool ifalias=true; // æ˜¯å¦æ‰‹åŠ¨è®¾ç½®åˆ«å 
 		cout << endl; 
 		std::vector<std::string> subdirectories;
 		listSubdirectories(Gpath2[i], subdirectories);
@@ -399,28 +532,29 @@ void SetConfig(string filename, bool ifreset, int summ)
 	    {
 			std::string NGpath=Gpath2[i]+"\\"+folderName;
 	        std::string modificationDate = getModificationDate(NGpath);
-	        std::cout << "´æµµÃû³Æ: " << folderName << endl;
-	        std::cout << "×î½üÓÎÍæÊ±¼ä: " << modificationDate << endl;
+	        std::cout << "å­˜æ¡£åç§°: " << folderName << endl;
+	        std::cout << "è¯¦ç»†ä¿¡æ¯â€”â€”" << FindName(folderName) << endl;
+	        std::cout << "æœ€è¿‘æ¸¸ç©æ—¶é—´: " << modificationDate << endl;
 	        std::cout << "-----------" << endl;
 	    }
 	    Sleep(1000);
-	    sprint("ÄãÊÇ·ñÏ£Íû¸øËùÓĞ´æµµÉèÖÃ±ğÃû£¿(0/1)\n\n",30);
+	    sprint("ä½ æ˜¯å¦å¸Œæœ›ç»™æ‰€æœ‰å­˜æ¡£è®¾ç½®åˆ«åï¼Ÿ(0/1)\n\n",30);
 	    cin>>ifalias; 
-	    if(ifalias) sprint("½ÓÏÂÀ´£¬ÄãĞèÒª¸øÕâĞ©ÎÄ¼ş¼ĞÆğÒ»¸öÒ×ÓÚÄã×Ô¼ºÀí½âµÄ±ğÃû¡£\n\n",30);
-		else sprint("ÄÇÃ´½«×Ô¶¯ÒÔ´æµµÎÄ¼ş¼ĞÃûÎª±ğÃû£¬Èç¹ûĞèÒªĞŞ¸Ä±ğÃû£¬ÇëÔÚ¡°ÉèÖÃ¡±ÖĞÊÖ¶¯ĞŞ¸Ä¡£\n",30);
+	    if(ifalias) sprint("æ¥ä¸‹æ¥ï¼Œä½ éœ€è¦ç»™è¿™äº›æ–‡ä»¶å¤¹èµ·ä¸€ä¸ªæ˜“äºä½ è‡ªå·±ç†è§£çš„åˆ«åã€‚\n\n",30);
+		else sprint("é‚£ä¹ˆå°†è‡ªåŠ¨ä»¥å­˜æ¡£æ–‡ä»¶å¤¹åä¸ºåˆ«åï¼Œå¦‚æœéœ€è¦ä¿®æ”¹åˆ«åï¼Œè¯·åœ¨â€œè®¾ç½®â€ä¸­æ‰‹åŠ¨ä¿®æ”¹ã€‚\n",30);
 		for (const auto& folderName : subdirectories)
 	    {
 	        string alias;
 	        B:
 	        if(ifalias)
 			{
-				cout << "ÇëÊäÈëÒÔÏÂ´æµµµÄ±ğÃû(¿ÉÒÔÊÇÒ»¶ÎÃèÊö) " << folderName << endl;
+				cout << "è¯·è¾“å…¥ä»¥ä¸‹å­˜æ¡£çš„åˆ«å(å¯ä»¥æ˜¯ä¸€æ®µæè¿°) " << folderName << endl;
 	        	cin >> alias;
 			}
 			else alias = folderName;
 	        if(!checkupName(alias))
 			{
-				printf("ÎÄ¼ş¼ĞÃû³Æ²»ÄÜ°üº¬·ûºÅ \\  /  :  *  ?  \"  <  >  | £¬ÇëÖØĞÂÃüÃû");
+				printf("æ–‡ä»¶å¤¹åç§°ä¸èƒ½åŒ…å«ç¬¦å· \\  /  :  *  ?  \"  <  >  | ï¼Œè¯·é‡æ–°å‘½å");
 				goto B;
 			}
 			newFile << folderName << endl << alias << endl;
@@ -434,10 +568,10 @@ void SetConfig(string filename, bool ifreset, int summ)
 
 
 
-//´´½¨±¸·İÎÄ¼ş 
+//åˆ›å»ºå¤‡ä»½æ–‡ä»¶ 
 void CreateConfig()
 {
-	printf("\nÄãĞèÒª´´½¨ (1)Ò»°ãÅäÖÃ »¹ÊÇ (2)È«×Ô¶¯ÅäÖÃ\n\n");
+	printf("\nä½ éœ€è¦åˆ›å»º (1)ä¸€èˆ¬é…ç½® è¿˜æ˜¯ (2)å…¨è‡ªåŠ¨é…ç½®\n\n");
 	char ch=getch();
 	string folderName,filename = "config1.ini";
 	string i="1";
@@ -451,39 +585,39 @@ void CreateConfig()
 	}
 	if(ch=='1')
 	{
-		printf("\nÕıÔÚ´´½¨ÃûÎª %s µÄÅäÖÃÎÄ¼ş\n",&filename[0]);     
+		printf("\næ­£åœ¨åˆ›å»ºåä¸º %s çš„é…ç½®æ–‡ä»¶\n",&filename[0]);     
     	ofstream newFile(filename);
-    	printf("ÇëÊäÈë´æµµÎÄ¼ş¼ĞµÄ´¢´æÂ·¾¶ (¶à¸öÎÄ¼ş¼ĞÂ·¾¶¼äÓÃ$·Ö¸ô): ");
+    	printf("è¯·è¾“å…¥å­˜æ¡£æ–‡ä»¶å¤¹çš„å‚¨å­˜è·¯å¾„ (å¤šä¸ªæ–‡ä»¶å¤¹è·¯å¾„é—´ç”¨$åˆ†éš”): ");
 		getline(cin,Gpath);
-		printf("ÇëÊäÈë±¸·İ´æ´¢ÎÄ¼ş¼ĞÂ·¾¶:");
+		printf("è¯·è¾“å…¥å¤‡ä»½å­˜å‚¨æ–‡ä»¶å¤¹è·¯å¾„:");
 		getline(cin,Bpath);
 		for(int i=0;i<=10;++i)
 			Gpath2[i]="";
 		int summ=PreSolve(Gpath);
         if (newFile.is_open()) {
         	newFile << "Auto:0" << endl;
-        	newFile << "ËùÓĞ´æµµÂ·¾¶:" << Gpath2[0];
+        	newFile << "æ‰€æœ‰å­˜æ¡£è·¯å¾„:" << Gpath2[0];
         	if(summ>1) newFile << '$'; 
         	for(int i=1;i<summ;++i)
         		newFile << Gpath2[i] << '$';
         	if(summ!=0) newFile << Gpath2[summ] << endl;
         	else newFile << endl;
-            newFile << "±¸·İ´æ´¢Â·¾¶:" << Bpath << endl;
+            newFile << "å¤‡ä»½å­˜å‚¨è·¯å¾„:" << Bpath << endl;
 			string keyPath = "Software\\7-Zip"; 
 			string valueName = "Path";
 			string softw=GetRegistryValue(keyPath, valueName),softww="";
 			for(int i=0;i<softw.size();++i)
 				if(softw[i]==' ') softww+='"',softww+=' ',softww+='"';
 				else softww+=softw[i];
-            newFile << "Ñ¹ËõÈí¼şÂ·¾¶:" << softww+"7z.exe" << endl;
-            newFile << "»¹Ô­Ç°ÏÈ±¸·İ:0" << endl;
-            newFile << "¹¤¾ßÏäÖÃ¶¥:0" << endl;
-            newFile << "ÊÖ¶¯Ñ¡Ôñ±¸·İ:0" << endl;
-            newFile << "¹ı³ÌÏÔÊ¾:1" << endl;
-            newFile << "Ñ¹ËõµÈ¼¶(Ô½¸ß£¬Ñ¹ËõÂÊÔ½µÍ£¬µ«ËÙ¶ÈÔ½Âı):5" << endl;
-            newFile << "±£ÁôµÄ±¸·İÊıÁ¿(0±íÊ¾²»ÏŞÖÆ):0" << endl; 
+            newFile << "å‹ç¼©è½¯ä»¶è·¯å¾„:" << softww+"7z.exe" << endl;
+            newFile << "è¿˜åŸå‰å…ˆå¤‡ä»½:0" << endl;
+            newFile << "å·¥å…·ç®±ç½®é¡¶:0" << endl;
+            newFile << "æ‰‹åŠ¨é€‰æ‹©å¤‡ä»½:0" << endl;
+            newFile << "è¿‡ç¨‹æ˜¾ç¤º:1" << endl;
+            newFile << "å‹ç¼©ç­‰çº§(è¶Šé«˜ï¼Œå‹ç¼©ç‡è¶Šä½ï¼Œä½†é€Ÿåº¦è¶Šæ…¢):5" << endl;
+            newFile << "ä¿ç•™çš„å¤‡ä»½æ•°é‡(0è¡¨ç¤ºä¸é™åˆ¶):0" << endl; 
     	}
-    	printf("\nÓĞÒÔÏÂ´æµµ:\n\n"); 
+    	printf("\næœ‰ä»¥ä¸‹å­˜æ¡£:\n\n"); 
     	for(int i=0;i<=summ;++i)
     	{
     		cout << endl; 
@@ -493,16 +627,17 @@ void CreateConfig()
 		    {
 				std::string NGpath=Gpath2[i]+"\\"+folderName;
 		        std::string modificationDate = getModificationDate(NGpath);
-		        std::cout << "´æµµÃû³Æ: " << folderName << endl;
-		        std::cout << "×î½üÓÎÍæÊ±¼ä " << modificationDate << endl;
+		        std::cout << "å­˜æ¡£åç§°: " << folderName << endl;
+		        std::cout << "è¯¦ç»†ä¿¡æ¯â€”â€”" << FindName(folderName) << endl;
+		        std::cout << "æœ€è¿‘æ¸¸ç©æ—¶é—´ " << modificationDate << endl;
 		        std::cout << "-----------" << endl;
 		    }
 		    Sleep(2000);
-		    sprint("½ÓÏÂÀ´£¬ÄãĞèÒª¸øÕâĞ©ÎÄ¼ş¼ĞÆğÒ»¸öÒ×ÓÚÄã×Ô¼ºÀí½âµÄ±ğÃû¡£\n\n",50);
+		    sprint("æ¥ä¸‹æ¥ï¼Œä½ éœ€è¦ç»™è¿™äº›æ–‡ä»¶å¤¹èµ·ä¸€ä¸ªæ˜“äºä½ è‡ªå·±ç†è§£çš„åˆ«åã€‚\n\n",50);
 			for (const auto& folderName : subdirectories)
 		    {
 		        string alias;
-		        cout << "Çë¸øÒÔÏÂ´æµµÉèÖÃ±ğÃû(¿ÉÒÔÊÇÒ»¶ÎÃèÊö) " << folderName << endl;
+		        cout << "è¯·ç»™ä»¥ä¸‹å­˜æ¡£è®¾ç½®åˆ«å(å¯ä»¥æ˜¯ä¸€æ®µæè¿°) " << folderName << endl;
 		        cin >> alias;
 				newFile << folderName << endl << alias << endl;
 		    }
@@ -510,7 +645,7 @@ void CreateConfig()
 		}
 	    newFile << "*" << endl;
 	    newFile.close();
-	    sprint("ÅäÖÃÎÄ¼ş´´½¨Íê±Ï£¡£¡£¡\n",10);
+	    sprint("é…ç½®æ–‡ä»¶åˆ›å»ºå®Œæ¯•ï¼ï¼ï¼\n",10);
         return ;
 	}
 	else if(ch=='2')
@@ -518,28 +653,28 @@ void CreateConfig()
 		ofstream newFile(filename);
 		newFile << "AUTO:1" << endl;
 		int configs;
-		printf("ĞèÒªµ÷ÓÃµÄÅäÖÃÎÄ¼şĞòºÅ(´ÓÖĞ»ñÈ¡´æµµÃû³ÆºÍ±ğÃû):\n");
+		printf("éœ€è¦è°ƒç”¨çš„é…ç½®æ–‡ä»¶åºå·(ä»ä¸­è·å–å­˜æ¡£åç§°å’Œåˆ«å):\n");
 		cin>>configs;
 		newFile << "Use Config:" << configs << endl;
-		printf("ĞèÒª±¸·İµÚ¼¸¸ö´æµµ:");
+		printf("éœ€è¦å¤‡ä»½ç¬¬å‡ ä¸ªå­˜æ¡£:");
 		cin>>configs;
 		newFile << "BF:" << configs << endl;
-		printf("ÄãĞèÒª (1)¶¨Ê±±¸·İ »¹ÊÇ (2)¼ä¸ô±¸·İ\n");
+		printf("ä½ éœ€è¦ (1)å®šæ—¶å¤‡ä»½ è¿˜æ˜¯ (2)é—´éš”å¤‡ä»½\n");
 		ch=getch();
 		if(ch=='1'){
-			printf("ÊäÈëÄãÒªÔÚÊ²Ã´Ê±¼ä±¸·İ: 1.ÇëÊäÈëÔÂ·İ£¬È»ºó»Ø³µ(ÊäÈë0±íÊ¾Ã¿¸öÔÂ):");
+			printf("è¾“å…¥ä½ è¦åœ¨ä»€ä¹ˆæ—¶é—´å¤‡ä»½: 1.è¯·è¾“å…¥æœˆä»½ï¼Œç„¶åå›è½¦(è¾“å…¥0è¡¨ç¤ºæ¯ä¸ªæœˆ):");
 			int mon,day,hour,min;
 			scanf("%d",&mon);
-			printf("2.ÇëÊäÈëÈÕÆÚ£¬È»ºó»Ø³µ(ÊäÈë0±íÊ¾Ã¿Ìì):");
+			printf("2.è¯·è¾“å…¥æ—¥æœŸï¼Œç„¶åå›è½¦(è¾“å…¥0è¡¨ç¤ºæ¯å¤©):");
 			scanf("%d",&day);
-			printf("3.ÇëÊäÈëĞ¡Ê±£¬È»ºó»Ø³µ(ÊäÈë0±íÊ¾Ã¿Ğ¡Ê±):");
+			printf("3.è¯·è¾“å…¥å°æ—¶ï¼Œç„¶åå›è½¦(è¾“å…¥0è¡¨ç¤ºæ¯å°æ—¶):");
 			scanf("%d",&hour);
-			printf("4.ÇëÊäÈë·ÖÖÓ£¬È»ºó»Ø³µ:");
+			printf("4.è¯·è¾“å…¥åˆ†é’Ÿï¼Œç„¶åå›è½¦:");
 			scanf("%d",&min);
 			newFile << "Mode:1\nTime:" << mon << " " << day << " " << hour << " " << min << endl;
 		} 
 		else if(ch=='2'){
-			printf("ÊäÈëÄãÒª¼ä¸ô¶àÉÙ·ÖÖÓ±¸·İ:");
+			printf("è¾“å…¥ä½ è¦é—´éš”å¤šå°‘åˆ†é’Ÿå¤‡ä»½:");
 			int detime;
 			scanf("%d",&detime);
 			newFile << "Mode:2\nTime:" << detime << endl;
@@ -548,10 +683,10 @@ void CreateConfig()
 			printf("\nError\n");
 			return ;
 		}
-		printf("ÊÇ·ñ¿ªÆôÃâ´òÈÅÄ£Ê½(0/1):");
+		printf("æ˜¯å¦å¼€å¯å…æ‰“æ‰°æ¨¡å¼(0/1):");
 		cin>>configs;
 		newFile << "Inter:" << configs << "\n*";
-		sprint("ÅäÖÃÎÄ¼ş´´½¨Íê±Ï£¡£¡£¡\n",10);
+		sprint("é…ç½®æ–‡ä»¶åˆ›å»ºå®Œæ¯•ï¼ï¼ï¼\n",10);
 		return ;
 	}
 	else
@@ -561,74 +696,8 @@ void CreateConfig()
 	}
 }
 
-//´¦Àí¿ÉÒÔ´Ó.configÀï¶ÁÈ¡µÄ´æµµÎÄ¼ş¼ĞÃû³Æ
-string FindName(string target)
-{
-	string result="";
-	string findpath=GetRegistryValue("Software\\Netease\\MCLauncher", "DownloadPath") + "\\Game";
-	std::vector<std::string> subdirectories;
-	listSubdirectories(findpath, subdirectories);
-	for (const auto& folderName : subdirectories)
-	{
-		if(folderName[0]!='.')
-		{
-			findpath = findpath + "\\" + folderName + "\\LanGameHost";
-			break;
-		}
-	}
-	std::vector<std::string> subdirectories2;
-	listSubdirectories(findpath, subdirectories2);
-	for (const auto& folderName : subdirectories2)
-	{
-		findpath = findpath + "\\" + folderName;
-	}
-	DIR* directory = opendir(findpath.c_str());
-    File files;
-    struct dirent* entry;
-    while ((entry = readdir(directory))) {
-        string fileName = entry->d_name;
-        string filePath = findpath + "\\" + fileName;
-        struct stat fileStat;
-        if (stat(filePath.c_str(), &fileStat) != -1) {
-            if (S_ISREG(fileStat.st_mode)) { // Only regular files are processed
-				ifstream file;
-				file.open(filePath);
-				string s;
-				int lines=0;
-				while (getline(file, s))
-				{
-					++lines;
-					if(lines==2)
-						result+=s;
-					if(lines==3)
-						result+=s;
-					if(lines==25)
-					{
-						bool iftarget=true;
-						//ÅĞ¶ÏtargetºÍµ±Ç°ÊÇ·ñÒ»ÖÂ 
-						for(int j=0;j<target.size();++j){
-							if(target[j]!=s[j+11])
-							{
-								iftarget=false;
-								break;
-							}
-						}
-						if(iftarget)
-							return result;
-						else
-							return "Î´Æ¥ÅäÔ­Ê¼Ãû³Æ";
-					}
-				}
-				file.close();
-            }
-        }
-    }
-    closedir(directory);
-	freopen("CON","r",stdin);
-	return "Î´Æ¥ÅäÔ­Ê¼Ãû³Æ";
-}
 
-//´¦ÀíÂ·¾¶ÖĞµÄ¿Õ¸ñ 
+//å¤„ç†è·¯å¾„ä¸­çš„ç©ºæ ¼ 
 string QuoteFilePathIfNeeded(const string& filePath) {  
     ostringstream quotedPath;  
     string currentPart;  
@@ -636,31 +705,31 @@ string QuoteFilePathIfNeeded(const string& filePath) {
   
     for (size_t i = 0; i < filePath.length(); ++i) {  
         if (filePath[i] == '\\' && !inQuotes) {  
-            // Èç¹ûµ±Ç°²¿·Ö°üº¬¿Õ¸ñ£¬²¢ÇÒÎÒÃÇ²»ÔÚÒıºÅÄÚ£¬ÔòÌí¼ÓÒıºÅ  
+            // å¦‚æœå½“å‰éƒ¨åˆ†åŒ…å«ç©ºæ ¼ï¼Œå¹¶ä¸”æˆ‘ä»¬ä¸åœ¨å¼•å·å†…ï¼Œåˆ™æ·»åŠ å¼•å·  
             if (!currentPart.empty() && currentPart.find(' ') != std::string::npos) {  
                 quotedPath << '"' << currentPart << '"';  
             } else {  
                 quotedPath << currentPart;  
             }  
-            quotedPath << '\\'; // Ìí¼Ó·´Ğ±¸Ü  
-            currentPart.clear(); // ÖØÖÃµ±Ç°²¿·Ö  
+            quotedPath << '\\'; // æ·»åŠ åæ–œæ   
+            currentPart.clear(); // é‡ç½®å½“å‰éƒ¨åˆ†  
         } else {  
-            currentPart += filePath[i]; // ÀÛ¼Óµ±Ç°×Ö·ûµ½µ±Ç°²¿·Ö  
+            currentPart += filePath[i]; // ç´¯åŠ å½“å‰å­—ç¬¦åˆ°å½“å‰éƒ¨åˆ†  
         }  
   
-        // Èç¹ûµ½´ï×Ö·û´®Ä©Î²£¬²¢ÇÒµ±Ç°²¿·Ö°üº¬¿Õ¸ñ£¬ÇÒ²»ÔÚÒıºÅÄÚ£¬ÔòÌí¼ÓÒıºÅ  
+        // å¦‚æœåˆ°è¾¾å­—ç¬¦ä¸²æœ«å°¾ï¼Œå¹¶ä¸”å½“å‰éƒ¨åˆ†åŒ…å«ç©ºæ ¼ï¼Œä¸”ä¸åœ¨å¼•å·å†…ï¼Œåˆ™æ·»åŠ å¼•å·  
         if (i == filePath.length() - 1 && !currentPart.empty() && currentPart.find(' ') != std::string::npos && !inQuotes) {  
             quotedPath << '"' << currentPart << '"';  
         }  
   
-        // Èç¹ûÓöµ½ÒıºÅ£¬ÔòÇĞ»»inQuotes×´Ì¬£¬²¢Ìø¹ıÕâ¸öÒıºÅ£¨¼ÙÉèÂ·¾¶ÖĞµÄÒıºÅÊÇ²»Ó¦¸Ã³öÏÖµÄ£©  
+        // å¦‚æœé‡åˆ°å¼•å·ï¼Œåˆ™åˆ‡æ¢inQuotesçŠ¶æ€ï¼Œå¹¶è·³è¿‡è¿™ä¸ªå¼•å·ï¼ˆå‡è®¾è·¯å¾„ä¸­çš„å¼•å·æ˜¯ä¸åº”è¯¥å‡ºç°çš„ï¼‰  
         if (filePath[i] == '"' && !inQuotes) {  
             inQuotes = true;  
-            // ×¢Òâ£ºÍ¨³£ÎÒÃÇ²»Ï£ÍûÂ·¾¶ÖĞ°üº¬ÒıºÅ£¬ÕâÀï¼ÙÉèÂ·¾¶´íÎó£¬²¢ºöÂÔÕâ¸öÒıºÅ  
-            // Èç¹ûÂ·¾¶ÖĞÔ­±¾¾ÍÓ¦¸ÃÓĞÒıºÅ£¬ÔòĞèÒªĞŞ¸ÄÂß¼­À´ÕıÈ·´¦ÀíÕâÖÖÇé¿ö  
+            // æ³¨æ„ï¼šé€šå¸¸æˆ‘ä»¬ä¸å¸Œæœ›è·¯å¾„ä¸­åŒ…å«å¼•å·ï¼Œè¿™é‡Œå‡è®¾è·¯å¾„é”™è¯¯ï¼Œå¹¶å¿½ç•¥è¿™ä¸ªå¼•å·  
+            // å¦‚æœè·¯å¾„ä¸­åŸæœ¬å°±åº”è¯¥æœ‰å¼•å·ï¼Œåˆ™éœ€è¦ä¿®æ”¹é€»è¾‘æ¥æ­£ç¡®å¤„ç†è¿™ç§æƒ…å†µ  
         } else if (filePath[i] == '"' && inQuotes) {  
             inQuotes = false;  
-            // Í¬Ñù£¬ºöÂÔÂ·¾¶ÖĞ²»Ó¦¸Ã³öÏÖµÄÒıºÅ  
+            // åŒæ ·ï¼Œå¿½ç•¥è·¯å¾„ä¸­ä¸åº”è¯¥å‡ºç°çš„å¼•å·  
         }  
     }  
   
@@ -669,49 +738,50 @@ string QuoteFilePathIfNeeded(const string& filePath) {
 
 void Main()
 {
+//	SetConsoleOutputCP(CP_UTF8);
 	string folderName;
 	string filename = "config.ini";
     ifstream file(filename);
     if (!file.is_open()) {
-    	sprint("-----»¶Ó­Ê¹ÓÃÍøÒ×ÎÒµÄÊÀ½ç´æµµ±¸·İ³ÌĞò-----\n",50);
-		sprint("           by mc_ortime (±¾ÏûÏ¢ÔÚµÚÒ»´Î´ò¿ªÊ±ÏÔÊ¾)\n",50);
-		sprint("ÉùÃ÷£º±¾³ÌĞò»ùÓÚÎÒµÄ¿ªÔ´´úÂë Minebackup(MITĞ­Òé) ĞŞ¸Ä¶øÀ´£¬½ûÖ¹ÉÌÓÃ»ò¶ñÒâÊ¹ÓÃ¡£\n",10);
-		sprint("Äã¿ÉÒÔ¼ÓÈëÎÒµÄÊÀ½çĞ¡¹¤¾ß½»Á÷Èº490861436½øĞĞÎÊÌâ½»Á÷ºÍ·´À¡\n",10);
-		printf("\n¿ª·¢²âÊÔ°æ±¾ ÕıÔÚ½¨Á¢ÅäÖÃÎÄ¼ş......\n"); 
+    	sprint("-----æ¬¢è¿ä½¿ç”¨ç½‘æ˜“æˆ‘çš„ä¸–ç•Œå­˜æ¡£å¤‡ä»½ç¨‹åº-----\n",50);
+		sprint("           by mc_ortime (æœ¬æ¶ˆæ¯åœ¨ç¬¬ä¸€æ¬¡æ‰“å¼€æ—¶æ˜¾ç¤º)\n",50);
+		sprint("å£°æ˜ï¼šæœ¬ç¨‹åºåŸºäºæˆ‘çš„å¼€æºä»£ç  Minebackup(MITåè®®) ä¿®æ”¹è€Œæ¥ï¼Œç¦æ­¢å•†ç”¨æˆ–æ¶æ„ä½¿ç”¨ã€‚\n",10);
+		sprint("ä½ å¯ä»¥åŠ å…¥æˆ‘çš„ä¸–ç•Œå°å·¥å…·äº¤æµç¾¤490861436è¿›è¡Œé—®é¢˜äº¤æµå’Œåé¦ˆ\n",10);
+		printf("\nå¼€å‘æµ‹è¯•ç‰ˆæœ¬ æ­£åœ¨å»ºç«‹é…ç½®æ–‡ä»¶......\n"); 
     	ofstream newFile(filename);
-//    	printf("ÇëÊäÈë´æµµÎÄ¼ş¼ĞµÄ´¢´æÂ·¾¶ (¶à¸öÎÄ¼ş¼ĞÂ·¾¶¼äÓÃ$·Ö¸ô): ");
-		Gpath=GetRegistryValue("Software\\Netease\\MCLauncher", "DownloadPath")+"/Game/.minecraft/saves$"+GetSpPath("echo %APPDATA%")+"/MinecraftPE_Netease/minecraftWorlds";
+//    	printf("è¯·è¾“å…¥å­˜æ¡£æ–‡ä»¶å¤¹çš„å‚¨å­˜è·¯å¾„ (å¤šä¸ªæ–‡ä»¶å¤¹è·¯å¾„é—´ç”¨$åˆ†éš”): ");
+		Gpath=GetRegistryValue("Software\\Netease\\MCLauncher", "DownloadPath")+"\\Game\\.minecraft\\saves$C:\\Users\\" + (string)getenv("USERNAME") + "\\Appdata\\Roaming\\MinecraftPE_Netease\\minecraftWorlds";
 		DIR* directory = opendir("D:");
 		if(directory)
 		{
-			Bpath="D:\\MineBackup±¸·İ",printf("ÎªÄú×Ô¶¯ÉèÖÃ±¸·İ´æµµ´æÔÚDÅÌ£¬ÈôÒª¸ü¸Ä£¬ÇëÒÔºóÉèÖÃ¡£\n");
-			mkdir("D:\\MineBackup±¸·İ"); 
+			Bpath="D:\\MineBackupå¤‡ä»½",printf("ä¸ºæ‚¨è‡ªåŠ¨è®¾ç½®å¤‡ä»½å­˜æ¡£å­˜åœ¨Dç›˜ï¼Œè‹¥è¦æ›´æ”¹ï¼Œè¯·ä»¥åè®¾ç½®ã€‚\n");
+			mkdir("D:\\MineBackupå¤‡ä»½"); 
 		}
 		else
 		{
-			Bpath="C:\\MineBackup±¸·İ",printf("ÎªÄú×Ô¶¯ÉèÖÃ±¸·İ´æµµ´æÔÚCÅÌ£¬ÈôÒª¸ü¸Ä£¬ÇëÒÔºóÉèÖÃ¡£\n");
-			mkdir("C:\\MineBackup±¸·İ"); 
+			Bpath="C:\\MineBackupå¤‡ä»½",printf("ä¸ºæ‚¨è‡ªåŠ¨è®¾ç½®å¤‡ä»½å­˜æ¡£å­˜åœ¨Cç›˜ï¼Œè‹¥è¦æ›´æ”¹ï¼Œè¯·ä»¥åè®¾ç½®ã€‚\n");
+			mkdir("C:\\MineBackupå¤‡ä»½"); 
 		}
 		int summ=PreSolve(Gpath);
         if (newFile.is_open()) {
-        	newFile << "Ê¹ÓÃµÄÅäÖÃÎÄ¼şĞòºÅ:0" << endl;
-        	newFile << "´æµµÎÄ¼ş¼ĞÂ·¾¶:" << Gpath << endl;//new
-            newFile << "´æµµ±¸·İ´æ´¢Â·¾¶:" << Bpath << endl;
+        	newFile << "ä½¿ç”¨çš„é…ç½®æ–‡ä»¶åºå·:0" << endl;
+        	newFile << "å­˜æ¡£æ–‡ä»¶å¤¹è·¯å¾„:" << Gpath << endl;//new
+            newFile << "å­˜æ¡£å¤‡ä»½å­˜å‚¨è·¯å¾„:" << Bpath << endl;
 			string keyPath = "Software\\Netease\\MCLauncher"; 
 			string valueName = "InstallLocation";
 			string softw = GetRegistryValue(keyPath, valueName)+"\\ext\\7z\\7z.exe";
-			string softww = QuoteFilePathIfNeeded(softw + "\\233");//Ä©Î²ºóÄªÃûÆäÃîÉÙÒ»µã 
-			//Â·¾¶ÖĞ²»ÄÜ°üº¬¿Õ¸ñ 
-			softww.pop_back(); //×îºó»¹²»ÄÜÓĞ¡°\¡± 
-            newFile << "Ñ¹ËõÈí¼şÂ·¾¶:" << softww << endl;
-            newFile << "±¸·İÇ°ÏÈ»¹Ô­:0" << endl;
-            newFile << "¹¤¾ßÏäÖÃ¶¥:0" << endl;
-            newFile << "ÊÖ¶¯Ñ¡Ôñ»¹Ô­(Ä¬ÈÏÑ¡×îĞÂ):0" << endl;
-            newFile << "¹ı³ÌÏÔÊ¾:1" << endl;
-            newFile << "Ñ¹ËõµÈ¼¶:5" << endl;
-            newFile << "±£ÁôµÄ±¸·İÊıÁ¿(0±íÊ¾²»ÏŞÖÆ):0" << endl; 
+			string softww = QuoteFilePathIfNeeded(softw + "\\233");//æœ«å°¾åè«åå…¶å¦™å°‘ä¸€ç‚¹ 
+			//è·¯å¾„ä¸­ä¸èƒ½åŒ…å«ç©ºæ ¼ 
+			softww.pop_back(); //æœ€åè¿˜ä¸èƒ½æœ‰â€œ\â€ 
+            newFile << "å‹ç¼©è½¯ä»¶è·¯å¾„:" << softww << endl;
+            newFile << "å¤‡ä»½å‰å…ˆè¿˜åŸ:0" << endl;
+            newFile << "å·¥å…·ç®±ç½®é¡¶:0" << endl;
+            newFile << "æ‰‹åŠ¨é€‰æ‹©è¿˜åŸ(é»˜è®¤é€‰æœ€æ–°):0" << endl;
+            newFile << "è¿‡ç¨‹æ˜¾ç¤º:1" << endl;
+            newFile << "å‹ç¼©ç­‰çº§:5" << endl;
+            newFile << "ä¿ç•™çš„å¤‡ä»½æ•°é‡(0è¡¨ç¤ºä¸é™åˆ¶):0" << endl; 
     	}
-    	printf("\nÓĞÒÔÏÂ´æµµÎÄ¼ş¼Ğ:\n\n"); 
+    	printf("\næœ‰ä»¥ä¸‹å­˜æ¡£æ–‡ä»¶å¤¹:\n\n"); 
     	for(int i=0;i<=summ;++i)
     	{
     		bool ifalias=true;
@@ -722,23 +792,23 @@ void Main()
 		    {
 				std::string NGpath=Gpath2[i]+"\\"+folderName;
 		        std::string modificationDate = getModificationDate(NGpath);
-		        std::cout << "´æµµÃû³Æ: " << folderName << endl;
-		        std::cout << "ÏêÏ¸ĞÅÏ¢¡ª¡ª" << FindName(folderName) << endl;
-		        std::cout << "×î½üÓÎÍæÊ±¼ä: " << modificationDate << endl;
+		        std::cout << "å­˜æ¡£åç§°: " << folderName << endl;
+		        std::cout << "è¯¦ç»†ä¿¡æ¯â€”â€”" << FindName(folderName) << endl;
+		        std::cout << "æœ€è¿‘æ¸¸ç©æ—¶é—´: " << modificationDate << endl;
 		        std::cout << "-----------" << endl;
 		    }
 		    Sleep(2000);
-		    sprint("ÄãÊÇ·ñÏ£Íû¸øËùÓĞ´æµµÉèÖÃ±ğÃû£¿(0/1)\n\n",30);
+		    sprint("ä½ æ˜¯å¦å¸Œæœ›ç»™æ‰€æœ‰å­˜æ¡£è®¾ç½®åˆ«åï¼Ÿ(0/1)\n\n",30);
 		    cin>>ifalias; 
-		    if(ifalias) sprint("½ÓÏÂÀ´£¬ÄãĞèÒª¸øÕâĞ©ÎÄ¼ş¼ĞÆğÒ»¸öÒ×ÓÚÄã×Ô¼ºÀí½âµÄ±ğÃû¡£\n\n",30);
-			else sprint("ÄÇÃ´½«×Ô¶¯ÒÔ´æµµÎÄ¼ş¼ĞÃû»òÕß¶ÁÈ¡ĞÅÏ¢Îª±ğÃû£¬Èç¹ûĞèÒªĞŞ¸Ä±ğÃû£¬ÇëÔÚ¡°ÉèÖÃ¡±ÖĞÊÖ¶¯ĞŞ¸Ä¡£\n",30);
+		    if(ifalias) sprint("æ¥ä¸‹æ¥ï¼Œä½ éœ€è¦ç»™è¿™äº›æ–‡ä»¶å¤¹èµ·ä¸€ä¸ªæ˜“äºä½ è‡ªå·±ç†è§£çš„åˆ«åã€‚\n\n",30);
+			else sprint("é‚£ä¹ˆå°†è‡ªåŠ¨ä»¥å­˜æ¡£æ–‡ä»¶å¤¹åæˆ–è€…è¯»å–ä¿¡æ¯ä¸ºåˆ«åï¼Œå¦‚æœéœ€è¦ä¿®æ”¹åˆ«åï¼Œè¯·åœ¨â€œè®¾ç½®â€ä¸­æ‰‹åŠ¨ä¿®æ”¹ã€‚\n",30);
 			for (const auto& folderName : subdirectories)
 		    {
 		        string alias;
 		        B:
 		        if(ifalias)
 				{
-					cout << "ÇëÊäÈëÒÔÏÂ´æµµµÄ±ğÃû(¿ÉÒÔÊÇÒ»¶ÎÃèÊö) " << folderName << endl;
+					cout << "è¯·è¾“å…¥ä»¥ä¸‹å­˜æ¡£çš„åˆ«å(å¯ä»¥æ˜¯ä¸€æ®µæè¿°) " << folderName << endl;
 		        	cin >> alias;
 				}
 				else
@@ -753,7 +823,7 @@ void Main()
 				}
 		        if(!checkupName(alias))
 				{
-					printf("ÎÄ¼ş¼ĞÃû³Æ²»ÄÜ°üº¬·ûºÅ \\  /  :  *  ?  \"  <  >  | £¬ÇëÖØĞÂÃüÃû");
+					printf("æ–‡ä»¶å¤¹åç§°ä¸èƒ½åŒ…å«ç¬¦å· \\  /  :  *  ?  \"  <  >  | ï¼Œè¯·é‡æ–°å‘½å");
 					goto B;
 				}
 				newFile << folderName << endl << alias << endl;
@@ -762,7 +832,7 @@ void Main()
 		}
 	    newFile << "*" << endl;
 	    newFile.close();
-	    printf("½áÊø£¡¿ÉÒÔ¹Ø±Õ³ÌĞò£¡\n");
+	    printf("ç»“æŸï¼å¯ä»¥å…³é—­ç¨‹åºï¼\n");
         return ;
     }
     
@@ -796,8 +866,8 @@ void Main()
 			if(mode==1)
 			{
 				Qread(); 
-				scanf("%d %d %d %d",&month,&day,&hour,&min);//ÕâÀïÈç¹û¶ÁÈë´íÎó£¬ºóÃæ¾ÍÕıÈ·¡­¡­ 
-				//2023.12.31½â¾ö£¬ÅäÖÃÎÄ¼şºóÃæ¶àÒ»´®¶«Î÷¾ÍĞĞ 
+				scanf("%d %d %d %d",&month,&day,&hour,&min);//è¿™é‡Œå¦‚æœè¯»å…¥é”™è¯¯ï¼Œåé¢å°±æ­£ç¡®â€¦â€¦ 
+				//2023.12.31è§£å†³ï¼Œé…ç½®æ–‡ä»¶åé¢å¤šä¸€ä¸²ä¸œè¥¿å°±è¡Œ 
 			}
 			else if(mode==2)
 			{
@@ -806,7 +876,7 @@ void Main()
 			}
 			Qread();
 			cin>>ifinter;
-			if(usecf==0) // Ê¹ÓÃÒ»°ãÅäÖÃÖĞµÄ´æµµÂ·¾¶ 
+			if(usecf==0) // ä½¿ç”¨ä¸€èˆ¬é…ç½®ä¸­çš„å­˜æ¡£è·¯å¾„ 
 			{
 				freopen("config.ini","r",stdin);
 //				getline(cin,tmp1);// Problem Here
@@ -849,7 +919,7 @@ void Main()
 				lv=inputs;
 				Qread();
 				cin>>limitnum;
-			    int i=0,ttt=0;//´æµµÊıÁ¿ ´æµµËùÔÚ´æµµÎÄ¼ş¼ĞĞòºÅ 
+			    int i=0,ttt=0;//å­˜æ¡£æ•°é‡ å­˜æ¡£æ‰€åœ¨å­˜æ¡£æ–‡ä»¶å¤¹åºå· 
 			    inputs[0]=getchar();// addition
 			    while(true)
 			    {
@@ -880,7 +950,7 @@ void Main()
 					}
 					name[i].alias=inputs;
 				}
-				//¼ì²â´æµµÎÄ¼ş¼ĞÊÇ·ñÓĞ¸üĞÂ 
+				//æ£€æµ‹å­˜æ¡£æ–‡ä»¶å¤¹æ˜¯å¦æœ‰æ›´æ–° 
 				int ix=0;
 				bool ifnew=0; 
 				for(int i=0;i<=summ;++i)
@@ -889,25 +959,26 @@ void Main()
 					listSubdirectories(Gpath2[i], subdirectories);
 				    for (const auto& folderName : subdirectories)
 				    {
-				    	if((Gpath2[i]+"\\"+folderName)==name[++ix].real) //ÓëÊµ¼ÊÒ»ÖÂÔò²»¸üĞÂ ×¢Òâ£¬ÕâÀïµÄ¼ì²âÊÇÓĞÈ±ÏİµÄ 
+				    	if((Gpath2[i]+"\\"+folderName)==name[++ix].real) //ä¸å®é™…ä¸€è‡´åˆ™ä¸æ›´æ–° æ³¨æ„ï¼Œè¿™é‡Œçš„æ£€æµ‹æ˜¯æœ‰ç¼ºé™·çš„ 
 				    		continue;
-						--ix;//ÒòÎª¶à³öÒ»¸ö£¬ËùÒÔ±È¶ÔÊ±-1£¬µ«Î´ÄÜ´¦Àí¼õÉÙÇé¿ö 
-				    	//²»Ò»ÖÂ£¬ÔòÁĞ³ö
+						--ix;//å› ä¸ºå¤šå‡ºä¸€ä¸ªï¼Œæ‰€ä»¥æ¯”å¯¹æ—¶-1ï¼Œä½†æœªèƒ½å¤„ç†å‡å°‘æƒ…å†µ 
+				    	//ä¸ä¸€è‡´ï¼Œåˆ™åˆ—å‡º
 				    	ifnew=true;
-						printf("\n¼ì²âµ½ĞÂµÄ´æµµÈçÏÂ£º\n");
+						printf("\næ£€æµ‹åˆ°æ–°çš„å­˜æ¡£å¦‚ä¸‹ï¼š\n");
 						string NGpath=Gpath2[i]+"\\"+folderName;
 				        string modificationDate = getModificationDate(NGpath);
-				        cout << "´æµµÃû³Æ: " << folderName << endl;
-				        cout << "×î½üÓÎÍæÊ±¼ä: " << modificationDate << endl;
+				        cout << "å­˜æ¡£åç§°: " << folderName << endl;
+				        std::cout << "è¯¦ç»†ä¿¡æ¯â€”â€”" << FindName(folderName) << endl;
+				        cout << "æœ€è¿‘æ¸¸ç©æ—¶é—´: " << modificationDate << endl;
 				        cout << "-----------" << endl;
 				    }
 				}
-				if(ifnew) //Èç¹ûÓĞ¸üĞÂ£¬Ñ¯ÎÊÊÇ·ñ¸üĞÂÅäÖÃÎÄ¼ş
+				if(ifnew) //å¦‚æœæœ‰æ›´æ–°ï¼Œè¯¢é—®æ˜¯å¦æ›´æ–°é…ç½®æ–‡ä»¶
 				{
-					printf("ÇëÎÊÊÇ·ñ¸üĞÂÅäÖÃÎÄ¼ş£¿(0/1)\n");
+					printf("è¯·é—®æ˜¯å¦æ›´æ–°é…ç½®æ–‡ä»¶ï¼Ÿ(0/1)\n");
 					char ch;
 					ch=getch();
-					printf("\nÇëÊÖ¶¯¸üĞÂ£¬ÔÚ¶ÔÓ¦Î»ÖÃÒÔºóÌí¼ÓĞÂ´æµµµÄ¡°ÕæÊµÃû¡±ºÍ¡°±ğÃû¡±\n"); 
+					printf("\nè¯·æ‰‹åŠ¨æ›´æ–°ï¼Œåœ¨å¯¹åº”ä½ç½®ä»¥åæ·»åŠ æ–°å­˜æ¡£çš„â€œçœŸå®åâ€å’Œâ€œåˆ«åâ€\n"); 
 					if(ch=='1')
 						system("start config.ini");
 				}
@@ -949,7 +1020,7 @@ void Main()
 			    	name[i].x=ttt;
 			    	getline(cin,name[i].alias);
 				}
-				//¼ì²â´æµµÎÄ¼ş¼ĞÊÇ·ñÓĞ¸üĞÂ 
+				//æ£€æµ‹å­˜æ¡£æ–‡ä»¶å¤¹æ˜¯å¦æœ‰æ›´æ–° 
 				int ix=0;
 				bool ifnew=0; 
 				for(int i=0;i<=summ;++i)
@@ -958,25 +1029,26 @@ void Main()
 					listSubdirectories(Gpath2[i], subdirectories);
 				    for (const auto& folderName : subdirectories)
 				    {
-				    	if((Gpath2[i]+"\\"+folderName)==name[++ix].real) //ÓëÊµ¼ÊÒ»ÖÂÔò²»¸üĞÂ ×¢Òâ£¬ÕâÀïµÄ¼ì²âÊÇÓĞÈ±ÏİµÄ 
+				    	if((Gpath2[i]+"\\"+folderName)==name[++ix].real) //ä¸å®é™…ä¸€è‡´åˆ™ä¸æ›´æ–° æ³¨æ„ï¼Œè¿™é‡Œçš„æ£€æµ‹æ˜¯æœ‰ç¼ºé™·çš„ 
 				    		continue;
-						--ix;//ÒòÎª¶à³öÒ»¸ö£¬ËùÒÔ±È¶ÔÊ±-1£¬µ«Î´ÄÜ´¦Àí¼õÉÙÇé¿ö 
-				    	//²»Ò»ÖÂ£¬ÔòÁĞ³ö
+						--ix;//å› ä¸ºå¤šå‡ºä¸€ä¸ªï¼Œæ‰€ä»¥æ¯”å¯¹æ—¶-1ï¼Œä½†æœªèƒ½å¤„ç†å‡å°‘æƒ…å†µ 
+				    	//ä¸ä¸€è‡´ï¼Œåˆ™åˆ—å‡º
 				    	ifnew=true;
-						printf("\n¼ì²âµ½ĞÂµÄ´æµµÈçÏÂ£º\n");
+						printf("\næ£€æµ‹åˆ°æ–°çš„å­˜æ¡£å¦‚ä¸‹ï¼š\n");
 						string NGpath=Gpath2[i]+"\\"+folderName;
 				        string modificationDate = getModificationDate(NGpath);
-				        cout << "´æµµÃû³Æ: " << folderName << endl;
-				        cout << "×î½üÓÎÍæÊ±¼ä: " << modificationDate << endl;
+				        cout << "å­˜æ¡£åç§°: " << folderName << endl;
+				        std::cout << "è¯¦ç»†ä¿¡æ¯â€”â€”" << FindName(folderName) << endl;
+				        cout << "æœ€è¿‘æ¸¸ç©æ—¶é—´: " << modificationDate << endl;
 				        cout << "-----------" << endl;
 				    }
 				}
-				if(ifnew) //Èç¹ûÓĞ¸üĞÂ£¬Ñ¯ÎÊÊÇ·ñ¸üĞÂÅäÖÃÎÄ¼ş
+				if(ifnew) //å¦‚æœæœ‰æ›´æ–°ï¼Œè¯¢é—®æ˜¯å¦æ›´æ–°é…ç½®æ–‡ä»¶
 				{
-					printf("ÇëÎÊÊÇ·ñ¸üĞÂÅäÖÃÎÄ¼ş£¿(0/1)\n");
+					printf("è¯·é—®æ˜¯å¦æ›´æ–°é…ç½®æ–‡ä»¶ï¼Ÿ(0/1)\n");
 					char ch;
 					ch=getch();
-					printf("\nÇëÊÖ¶¯¸üĞÂ£¬ÔÚ¶ÔÓ¦Î»ÖÃÒÔºóÌí¼ÓĞÂ´æµµµÄ¡°ÕæÊµÃû¡±ºÍ¡°±ğÃû¡±\n"); 
+					printf("\nè¯·æ‰‹åŠ¨æ›´æ–°ï¼Œåœ¨å¯¹åº”ä½ç½®ä»¥åæ·»åŠ æ–°å­˜æ¡£çš„â€œçœŸå®åâ€å’Œâ€œåˆ«åâ€\n"); 
 					string command="start "+temps;
 					if(ch=='1')
 						system(command.c_str());
@@ -986,24 +1058,24 @@ void Main()
 			{
 				while(true)
 				{
-					// »ñÈ¡µ±Ç°Ê±¼ä
+					// è·å–å½“å‰æ—¶é—´
 				    std::time_t now = std::time(nullptr);
 				    std::tm* local_time = std::localtime(&now);
 				
 				    std::tm target_time = {0};
-				    target_time.tm_year = local_time->tm_year; // Äê·İ´Ó1900Äê¿ªÊ¼¼ÆËã
+				    target_time.tm_year = local_time->tm_year; // å¹´ä»½ä»1900å¹´å¼€å§‹è®¡ç®—
 				    if(month==0)  target_time.tm_mon = local_time->tm_mon;
-				    else target_time.tm_mon = month - 1; // ÔÂ·İ´Ó0¿ªÊ¼¼ÆËã
+				    else target_time.tm_mon = month - 1; // æœˆä»½ä»0å¼€å§‹è®¡ç®—
 				    if(day==0) target_time.tm_mday = local_time->tm_mday;
 				    else target_time.tm_mday = day;
 				    if(hour==0) target_time.tm_hour = local_time->tm_hour;
 				    else target_time.tm_hour = hour;
 				    if(min==0) target_time.tm_min = local_time->tm_min;
 				    else target_time.tm_min = min;
-				    // Èç¹ûµ±Ç°Ê±¼äÒÑ¾­³¬¹ıÁËÄ¿±êÊ±¼ä£¬ÄÇÃ´¾Í²»ĞèÒªµÈ´ıÁË
+				    // å¦‚æœå½“å‰æ—¶é—´å·²ç»è¶…è¿‡äº†ç›®æ ‡æ—¶é—´ï¼Œé‚£ä¹ˆå°±ä¸éœ€è¦ç­‰å¾…äº†
 				    A: 
 				    if (std::mktime(local_time) > std::mktime(&target_time)) {
-				        std::cout << "ÏÖÔÚµÄÊ±¼äÒÑ¾­³¬¹ıÁËÄ¿±êÊ±¼ä" << std::endl;
+				        std::cout << "ç°åœ¨çš„æ—¶é—´å·²ç»è¶…è¿‡äº†ç›®æ ‡æ—¶é—´" << std::endl;
 						if(min!=0 && hour!=0 && day!=0 && month!=0) return ;
 						if(min==0)
 						{
@@ -1030,9 +1102,9 @@ void Main()
 							--target_time.tm_mon;
 						}						
 				    } else {
-				        // ¼ÆËãĞèÒªµÈ´ıµÄÊ±¼ä£¨µ¥Î»£ºÃë£©
+				        // è®¡ç®—éœ€è¦ç­‰å¾…çš„æ—¶é—´ï¼ˆå•ä½ï¼šç§’ï¼‰
 				        std::time_t wait_time = std::difftime(std::mktime(&target_time), std::mktime(local_time));
-				        // µÈ´ıÖ¸¶¨µÄÊ±¼ä
+				        // ç­‰å¾…æŒ‡å®šçš„æ—¶é—´
 				        std::this_thread::sleep_for(std::chrono::seconds(wait_time));
 				        Backup(bfnum,false);
 				    }
@@ -1042,7 +1114,7 @@ void Main()
 			{
 				while(true)
 				{
-				    // ÈÃÏß³ÌĞİÃßÖ¸¶¨µÄÊ±¼ä
+				    // è®©çº¿ç¨‹ä¼‘çœ æŒ‡å®šçš„æ—¶é—´
 				    std::this_thread::sleep_for(std::chrono::seconds(60*bftime));
 				    Backup(bfnum,false);
 				}
@@ -1068,8 +1140,8 @@ void Main()
 	getline(cin,lv);
 	Qread();
 	cin>>limitnum;
-    int i=0,ttt=0;//´æµµÊıÁ¿ ´æµµËùÔÚ´æµµÎÄ¼ş¼ĞĞòºÅ 
-    printf("ÓĞÒÔÏÂ´æµµ:\n\n"); 
+    int i=0,ttt=0;//å­˜æ¡£æ•°é‡ å­˜æ¡£æ‰€åœ¨å­˜æ¡£æ–‡ä»¶å¤¹åºå· 
+    printf("æœ‰ä»¥ä¸‹å­˜æ¡£:\n\n"); 
     char ch=getchar();//DEBUG because getline ...//bug why?now ok?
     while(true)
     {
@@ -1087,7 +1159,7 @@ void Main()
     	cout<<name[i].alias<<endl;
 	}
 	freopen("CON","r",stdin);
-	//¼ì²â´æµµÎÄ¼ş¼ĞÊÇ·ñÓĞ¸üĞÂ 
+	//æ£€æµ‹å­˜æ¡£æ–‡ä»¶å¤¹æ˜¯å¦æœ‰æ›´æ–° 
 	int ix=0;
 	bool ifnew=0; 
 	for(int i=0;i<=summ;++i)
@@ -1096,52 +1168,53 @@ void Main()
 		listSubdirectories(Gpath2[i], subdirectories);
 	    for (const auto& folderName : subdirectories)
 	    {
-	    	if((Gpath2[i]+"\\"+folderName)==name[++ix].real) //ÓëÊµ¼ÊÒ»ÖÂÔò²»¸üĞÂ ×¢Òâ£¬ÕâÀïµÄ¼ì²âÊÇÓĞÈ±ÏİµÄ 
+	    	if((Gpath2[i]+"\\"+folderName)==name[++ix].real) //ä¸å®é™…ä¸€è‡´åˆ™ä¸æ›´æ–° æ³¨æ„ï¼Œè¿™é‡Œçš„æ£€æµ‹æ˜¯æœ‰ç¼ºé™·çš„ 
 	    		continue;
-			--ix;//ÒòÎª¶à³öÒ»¸ö£¬ËùÒÔ±È¶ÔÊ±-1£¬µ«Î´ÄÜ´¦Àí¼õÉÙÇé¿ö 
-	    	//²»Ò»ÖÂ£¬ÔòÁĞ³ö
+			--ix;//å› ä¸ºå¤šå‡ºä¸€ä¸ªï¼Œæ‰€ä»¥æ¯”å¯¹æ—¶-1ï¼Œä½†æœªèƒ½å¤„ç†å‡å°‘æƒ…å†µ 
+	    	//ä¸ä¸€è‡´ï¼Œåˆ™åˆ—å‡º
 	    	ifnew=true;
-			printf("\n¼ì²âµ½ĞÂµÄ´æµµÈçÏÂ£º\n");
+			printf("\næ£€æµ‹åˆ°æ–°çš„å­˜æ¡£å¦‚ä¸‹ï¼š\n");
 			string NGpath=Gpath2[i]+"\\"+folderName;
 	        string modificationDate = getModificationDate(NGpath);
-	        cout << "´æµµÃû³Æ: " << folderName << endl;
-	        cout << "×î½üÓÎÍæÊ±¼ä: " << modificationDate << endl;
+	        cout << "å­˜æ¡£åç§°: " << folderName << endl;
+	        std::cout << "è¯¦ç»†ä¿¡æ¯â€”â€”" << FindName(folderName) << endl;
+	        cout << "æœ€è¿‘æ¸¸ç©æ—¶é—´: " << modificationDate << endl;
 	        cout << "-----------" << endl;
 	    }
 	}
-	if(ifnew) //Èç¹ûÓĞ¸üĞÂ£¬Ñ¯ÎÊÊÇ·ñ¸üĞÂÅäÖÃÎÄ¼ş
+	if(ifnew) //å¦‚æœæœ‰æ›´æ–°ï¼Œè¯¢é—®æ˜¯å¦æ›´æ–°é…ç½®æ–‡ä»¶
 	{
-		printf("ÇëÎÊÊÇ·ñ¸üĞÂÅäÖÃÎÄ¼ş£¿(0/1)\n");
+		printf("è¯·é—®æ˜¯å¦æ›´æ–°é…ç½®æ–‡ä»¶ï¼Ÿ(0/1)\n");
 		char ch;
 		ch=getch();
-		printf("\nÇëÊÖ¶¯¸üĞÂ£¬ÔÚ¶ÔÓ¦Î»ÖÃÒÔºóÌí¼ÓĞÂ´æµµµÄ¡°ÕæÊµÃû¡±ºÍ¡°±ğÃû¡±\n"); 
+		printf("\nè¯·æ‰‹åŠ¨æ›´æ–°ï¼Œåœ¨å¯¹åº”ä½ç½®ä»¥åæ·»åŠ æ–°å­˜æ¡£çš„â€œçœŸå®åâ€å’Œâ€œåˆ«åâ€\n"); 
 		if(ch=='1')
 			system("start config.ini");
 	}
 	while(true)
 	{
-		printf("ÇëÎÊÄãÒª (1)±¸·İ´æµµ (2)»Øµµ (3)¸üĞÂ´æµµ (4) ×Ô¶¯±¸·İ »¹ÊÇ (5) ´´½¨ÅäÖÃÎÄ¼ş ÄØ£¿ (°´ 1/2/3/4/5)\n");
+		printf("è¯·é—®ä½ è¦ (1)å¤‡ä»½å­˜æ¡£ (2)å›æ¡£ (3)æ›´æ–°å­˜æ¡£ (4) è‡ªåŠ¨å¤‡ä»½ è¿˜æ˜¯ (5) åˆ›å»ºé…ç½®æ–‡ä»¶ å‘¢ï¼Ÿ (æŒ‰ 1/2/3/4/5)\n");
 		char ch;
 		ch=getch();
 		if(ch=='1')
 		{
-			printf("ÊäÈë´æµµÇ°µÄĞòºÅÀ´Íê³É±¸·İ:");
+			printf("è¾“å…¥å­˜æ¡£å‰çš„åºå·æ¥å®Œæˆå¤‡ä»½:");
 			int bf;
 			scanf("%d",&bf);
 			Backup(bf,echos);
-			sprint("\n\n±¸·İÍê³É! ! !\n\n",40);
+			sprint("\n\nå¤‡ä»½å®Œæˆ! ! !\n\n",40);
 		}
 		else if(ch=='2')
 		{
 			int i=0;
-		    if(!choice) printf("ÊäÈë´æµµÇ°µÄĞòºÅÀ´Íê³É»¹Ô­ (Ä£Ê½: Ñ¡È¡×îĞÂ±¸·İ) : ");
-		    else printf("ÊäÈë´æµµÇ°µÄĞòºÅÀ´Íê³É»¹Ô­ (Ä£Ê½: ÊÖ¶¯Ñ¡Ôñ) :");
+		    if(!choice) printf("è¾“å…¥å­˜æ¡£å‰çš„åºå·æ¥å®Œæˆè¿˜åŸ (æ¨¡å¼: é€‰å–æœ€æ–°å¤‡ä»½) : ");
+		    else printf("è¾“å…¥å­˜æ¡£å‰çš„åºå·æ¥å®Œæˆè¿˜åŸ (æ¨¡å¼: æ‰‹åŠ¨é€‰æ‹©) :");
 			int bf;
 			scanf("%d",&bf);
 			string folderPath=Bpath+"\\"+name[bf].alias+"\\";
 			DIR* directory = opendir(folderPath.c_str());
 		    if (!directory) {
-		        printf("±¸·İ²»´æÔÚ£¬ÎŞ·¨»¹Ô­£¡Äã¿ÉÒÔ»¹Ã»ÓĞ½øĞĞ¹ı±¸·İ\n");
+		        printf("å¤‡ä»½ä¸å­˜åœ¨ï¼Œæ— æ³•è¿˜åŸï¼ä½ å¯ä»¥è¿˜æ²¡æœ‰è¿›è¡Œè¿‡å¤‡ä»½\n");
 		        return ;
 		    }
 		    File files;
@@ -1171,9 +1244,9 @@ void Main()
 			else
 			{
 				string folderName2 = Bpath + "\\" + name[bf].alias;
-				printf("ÒÔÏÂÊÇ±¸·İ´æµµ\n\n");
+				printf("ä»¥ä¸‹æ˜¯å¤‡ä»½å­˜æ¡£\n\n");
 				ListFiles(folderName2);
-				printf("ÊäÈë±¸·İÇ°µÄĞòºÅÀ´Íê³É»¹Ô­:");
+				printf("è¾“å…¥å¤‡ä»½å‰çš„åºå·æ¥å®Œæˆè¿˜åŸ:");
 				int bf2;
 				scanf("%d",&bf2);
 				files.name=temp[bf2];
@@ -1182,28 +1255,28 @@ void Main()
 		    	Backup(bf,false);
 			command=yasuo+" x "+Bpath+"\\"+name[bf].alias+"\\"+files.name+" -o"+name[bf].real+" -y";
 			system(command.c_str());
-			sprint("\n\n»¹Ô­³É¹¦! ! !\n\n",40);
+			sprint("\n\nè¿˜åŸæˆåŠŸ! ! !\n\n",40);
 		}
 		else if(ch=='3')
 		{
 			freopen("CON","r",stdin);
         	ofstream cfile("config.ini");
-        	cfile << "Ê¹ÓÃµÄÅäÖÃÎÄ¼şĞòºÅ:0\n";
-        	cfile << "´æµµÎÄ¼ş¼ĞÂ·¾¶:" << Gpath2[0] << '$';
+        	cfile << "ä½¿ç”¨çš„é…ç½®æ–‡ä»¶åºå·:0\n";
+        	cfile << "å­˜æ¡£æ–‡ä»¶å¤¹è·¯å¾„:" << Gpath2[0] << '$';
         	for(int i=1;i<summ;++i)
         		cfile << Gpath2[i] << '$';
         	cfile << Gpath2[summ] << endl;
-        	cfile << "´æµµ±¸·İ´æ´¢Â·¾¶:" << Bpath << endl;
+        	cfile << "å­˜æ¡£å¤‡ä»½å­˜å‚¨è·¯å¾„:" << Bpath << endl;
 			string keyPath = "Software\\7-Zip"; 
 			string valueName = "Path";
-            cfile << "Ñ¹ËõÈí¼şÂ·¾¶:" << GetRegistryValue(keyPath, valueName)+"7z.exe" << endl;
-            cfile << "±¸·İÇ°»¹Ô­:" << prebf << endl;
-            cfile << "¹¤¾ßÏäÖÃ¶¥:" << ontop << endl;
-            cfile << "ÊÖ¶¯Ñ¡Ôñ±¸·İ:" << choice << endl;
-            cfile << "¹ı³ÌÏÔÊ¾:" << echos << endl;
-            cfile << "Ñ¹ËõµÈ¼¶:" << lv << endl;
-            cfile << "±£ÁôµÄ±¸·İÊıÁ¿(0±íÊ¾²»ÏŞÖÆ):" << limitnum << endl; 
-        	printf("\nÔÚÎÄ¼ş¼ĞÖĞÓĞÒÔÏÂ´æµµ: \n\n"); 
+            cfile << "å‹ç¼©è½¯ä»¶è·¯å¾„:" << GetRegistryValue(keyPath, valueName)+"7z.exe" << endl;
+            cfile << "å¤‡ä»½å‰è¿˜åŸ:" << prebf << endl;
+            cfile << "å·¥å…·ç®±ç½®é¡¶:" << ontop << endl;
+            cfile << "æ‰‹åŠ¨é€‰æ‹©å¤‡ä»½:" << choice << endl;
+            cfile << "è¿‡ç¨‹æ˜¾ç¤º:" << echos << endl;
+            cfile << "å‹ç¼©ç­‰çº§:" << lv << endl;
+            cfile << "ä¿ç•™çš„å¤‡ä»½æ•°é‡(0è¡¨ç¤ºä¸é™åˆ¶):" << limitnum << endl; 
+        	printf("\nåœ¨æ–‡ä»¶å¤¹ä¸­æœ‰ä»¥ä¸‹å­˜æ¡£: \n\n"); 
 	    	for(int i=0;i<=summ;++i)
 	    	{
 	    		vector<string> subdirectories;
@@ -1212,33 +1285,34 @@ void Main()
 			    {
 					string NGpath=Gpath2[i]+"\\"+folderName;
 			        string modificationDate = getModificationDate(NGpath);
-			        cout << "´æµµÃû³Æ: " << folderName << endl;
-			        cout << "×î½üÓÎÍæÊ±¼ä: " << modificationDate << endl;
+			        cout << "å­˜æ¡£åç§°: " << folderName << endl;
+			        cout << "è¯¦ç»†ä¿¡æ¯â€”â€”" << FindName(folderName) << endl;
+			        cout << "æœ€è¿‘æ¸¸ç©æ—¶é—´: " << modificationDate << endl;
 			        cout << "-----------" << endl;
 			    }
 			    Sleep(2000);
-			    sprint("½ÓÏÂÀ´£¬ÄãĞèÒª¸øÕâĞ©ÎÄ¼ş¼ĞÆğÒ»¸öÒ×ÓÚÄã×Ô¼ºÀí½âµÄ±ğÃû¡£\n\n",50);
+			    sprint("æ¥ä¸‹æ¥ï¼Œä½ éœ€è¦ç»™è¿™äº›æ–‡ä»¶å¤¹èµ·ä¸€ä¸ªæ˜“äºä½ è‡ªå·±ç†è§£çš„åˆ«åã€‚\n\n",50);
 				for (const auto& folderName : subdirectories)
 			    {
 			        string alias;
-			        cout << "ÇëÊäÈëÒÔÏÂ´æµµµÄ±ğÃû(¿ÉÒÔÊÇÒ»¶ÎÃèÊö) " << endl << folderName;
+			        cout << "è¯·è¾“å…¥ä»¥ä¸‹å­˜æ¡£çš„åˆ«å(å¯ä»¥æ˜¯ä¸€æ®µæè¿°) " << endl << folderName;
 			        cin >> alias;
 					cfile << folderName << endl << alias << endl;
 			    }
 			    cfile << "$" << endl;
 			}
 		    cfile << "*" << endl;
-	    	puts("\n\n¸üĞÂ´æµµÍê³É\n\n");
+	    	puts("\n\næ›´æ–°å­˜æ¡£å®Œæˆ\n\n");
 	    	cfile.close(); 
 		}
 		else if(ch=='4')
 		{
-			printf("ÇëÊäÈëÄãÒª±¸·İµÄ´æµµĞòºÅ:");
+			printf("è¯·è¾“å…¥ä½ è¦å¤‡ä»½çš„å­˜æ¡£åºå·:");
 			int bf,tim;
 			scanf("%d",&bf);
-			printf("Ã¿¸ô¼¸·ÖÖÓ½øĞĞ±¸·İ: ");
+			printf("æ¯éš”å‡ åˆ†é’Ÿè¿›è¡Œå¤‡ä»½: ");
 			scanf("%d",&tim);
-			printf("ÒÑ½øÈë×Ô¶¯±¸·İÄ£Ê½£¬Ã¿¸ô %d ·ÖÖÓ½øĞĞ±¸·İ",tim);
+			printf("å·²è¿›å…¥è‡ªåŠ¨å¤‡ä»½æ¨¡å¼ï¼Œæ¯éš” %d åˆ†é’Ÿè¿›è¡Œå¤‡ä»½",tim);
 			while(true)
 			{
 				Backup(bf,false);
@@ -1249,7 +1323,7 @@ void Main()
 		{
 			CreateConfig();
 		}
-		else printf("Çë°´¼üÅÌÉÏµÄ 1/2/3/4/5 ¼ü\n\n");
+		else printf("è¯·æŒ‰é”®ç›˜ä¸Šçš„ 1/2/3/4/5 é”®\n\n");
 	}
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 }
@@ -1314,17 +1388,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         hInstance,
         NULL
     );
-    CreateWindow("button", "´ò¿ª´æµµÎÄ¼ş¼Ğ",
+    CreateWindow("button", "æ‰“å¼€å­˜æ¡£æ–‡ä»¶å¤¹",
         WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
         20, 10, 120, 35,
         hwnd, (HMENU)1, hInstance, NULL);
 
-    CreateWindow("button", "´ò¿ª±¸·İÎÄ¼ş¼Ğ",
+    CreateWindow("button", "æ‰“å¼€å¤‡ä»½æ–‡ä»¶å¤¹",
         WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
         150, 10, 120, 35,
         hwnd, (HMENU)2, hInstance, NULL);
 
-    CreateWindow("button", "ÉèÖÃ",
+    CreateWindow("button", "è®¾ç½®",
         WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
         280, 10, 80, 35,
         hwnd, (HMENU)3, hInstance, NULL);
@@ -1333,7 +1407,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     std::thread MainThread(Main);
     MSG msg = {};
     
-    //Ïß³ÌĞİÃß£¬ÎªÁËµÈ´ıontop¶ÁÈ¡Íê±Ï 
+    //çº¿ç¨‹ä¼‘çœ ï¼Œä¸ºäº†ç­‰å¾…ontopè¯»å–å®Œæ¯• 
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     if(ontop)
 		SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);//Top the window
