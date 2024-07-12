@@ -14,4 +14,4 @@
 
 ## 贡献者名单 —— 包括代码及意见改进
 
-[@Hongmouren](https://github.com/Hongmoren)
+[@IM-HSJ](https://github.com/Hongmouren)
