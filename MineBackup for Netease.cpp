@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "imgui-all.h"
 #include "i18n.h"
 #include <iostream>
@@ -65,7 +66,7 @@ ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 // 放在全局变量区域
 struct AutoBackupTask {
 	thread worker;
-	atomic<bool> stop_flag{ false }; // 原子布尔值，用于安全地通知线程停止
+	atomic<bool> stop_flag{ false };
 };
 
 static map<int, AutoBackupTask> g_active_auto_backups; // key: worldIndex, value: task
@@ -554,16 +555,6 @@ struct Console
 			return;
 		}
 
-		// As a specific feature guaranteed by the library, after calling Begin() the last Item represent the title bar.
-		// So e.g. IsItemHovered() will return true when hovering the title bar.
-		// Here we create a context menu only available from the title bar.(暂时无用
-		/*if (ImGui::BeginPopupContextItem())
-		{
-			if (ImGui::MenuItem(u8"关闭"))
-				*p_open = false;
-			ImGui::EndPopup();
-		}*/
-
 		ImGui::TextWrapped(L("CONSOLE_HELP_PROMPT1"));
 		ImGui::TextWrapped(L("CONSOLE_HELP_PROMPT2"));
 
@@ -589,36 +580,6 @@ struct Console
 		const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
 		if (ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_HorizontalScrollbar))
 		{
-			/*if (ImGui::BeginPopupContextWindow())
-			{
-				if (ImGui::Selectable("清空")) ClearLog();
-				ImGui::EndPopup();
-			}*/
-
-			// Display every line as a separate entry so we can change their color or add custom widgets.
-			// If you only want raw text you can use ImGui::TextUnformatted(log.begin(), log.end());
-			// NB- if you have thousands of entries this approach may be too inefficient and may require user-side clipping
-			// to only process visible items. The clipper will automatically measure the height of your first item and then
-			// "seek" to display only items in the visible area.
-			// To use the clipper we can replace your standard loop:
-			//      for (int i = 0; i < Items.Size; i++)
-			//   With:
-			//      ImGuiListClipper clipper;
-			//      clipper.Begin(Items.Size);
-			//      while (clipper.Step())
-			//         for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
-			// - That your items are evenly spaced (same height)
-			// - That you have cheap random access to your elements (you can access them given their index,
-			//   without processing all the ones before)
-			// You cannot this code as-is if a filter is active because it breaks the 'cheap random-access' property.
-			// We would need random-access on the post-filtered list.
-			// A typical application wanting coarse clipping and filtering may want to pre-compute an array of indices
-			// or offsets of items that passed the filtering test, recomputing this array when user changes the filter,
-			// and appending newly elements as they are inserted. This is left as a task to the user until we can manage
-			// to improve this example code!
-			// If your items are of variable height:
-			// - Split them into same height items would be simpler and facilitate random-seeking into your list.
-			// - Consider using manual call to IsRectVisible() and skipping extraneous decoration from your items.
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 			if (copy_to_clipboard)
 				ImGui::LogToClipboard();
@@ -627,12 +588,10 @@ struct Console
 				if (!Filter.PassFilter(item))
 					continue;
 
-				// Normally you would store more information in your item than just a string.
-				// (e.g. make Items[] an array of structure, store color/type etc.)
 				ImVec4 color;
 				bool has_color = false;
 				if (strstr(item, "[error]")) { color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true; }
-				else if (strncmp(item, "# ", 2) == 0 || strncmp(item, "[INFO] ", 2) == 0) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
+				else if (strncmp(item, "# ", 2) == 0) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
 				else if (strncmp(item, u8"[提示] ", 2) == 0) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
 				if (has_color)
 					ImGui::PushStyleColor(ImGuiCol_Text, color);
@@ -1284,21 +1243,10 @@ int main(int, char**)
 	bool sevenZipExtracted = Extract7zToTempFile(g_7zTempPath);
 	if (isFirstRun) {
 		LANGID lang_id = GetUserDefaultUILanguage();
-
-		if (lang_id == 2052 || lang_id == 1028) {
-			g_CurrentLang = "zh-CN";
-			Fontss = L"C:\\Windows\\Fonts\\msyh.ttc";
-		}
-		else {
-			g_CurrentLang = "en-US"; //英文
-			Fontss = L"C:\\Windows\\Fonts\\SegoeUI.ttf";
-		}
+		g_CurrentLang = "zh-CN";
+		Fontss = L"C:\\Windows\\Fonts\\msyh.ttc";
 	}
-	if (g_CurrentLang == "zh-CN")
-		ImFont* font = io.Fonts->AddFontFromFileTTF(wstring_to_utf8(Fontss).c_str(), 20.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
-	else
-		ImFont* font = io.Fonts->AddFontFromFileTTF(wstring_to_utf8(Fontss).c_str(), 20.0f, nullptr, io.Fonts->GetGlyphRangesDefault());
-
+	ImFont* font = io.Fonts->AddFontFromFileTTF(wstring_to_utf8(Fontss).c_str(), 20.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
 	console.AddLog(L("CONSOLE_WELCOME"));
 
 	if (sevenZipExtracted) {
@@ -1375,12 +1323,31 @@ int main(int, char**)
 				ImGui::TextWrapped(L("WIZARD_STEP1_DESC2"));
 				ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
+				// 找路径
+				string pathTemp;
+				if (ImGui::Button(u8"自动选择 Java版 存档路径")) {
+					if (filesystem::exists(GetRegistryValue("Software\\Netease\\MCLauncher", "DownloadPath") + "\\Game\\.minecraft\\saves")) {
+						pathTemp = GetRegistryValue("Software\\Netease\\MCLauncher", "DownloadPath") + "\\Game\\.minecraft\\saves";
+						strncpy_s(saveRootPath, pathTemp.c_str(), sizeof(saveRootPath));
+						page++;
+					}
+				}
+				ImGui::SameLine();
+				if (ImGui::Button(u8"自动选择 基岩版 存档路径")) { // 不能用 getenv，改成_dupenv_s了...
+					if (filesystem::exists((string)getenv("APPDATA") + "\\MinecraftPE_Netease\\minecraftWorlds")) {
+						pathTemp = (string)getenv("APPDATA") + "\\MinecraftPE_Netease\\minecraftWorlds";
+						strncpy_s(saveRootPath, pathTemp.c_str(), sizeof(saveRootPath));
+						page++;
+					}
+				}
+				
 				if (ImGui::Button(L("BUTTON_SELECT_FOLDER"))) {
 					wstring selected_folder = SelectFolderDialog();
 					if (!selected_folder.empty()) {
 						strncpy_s(saveRootPath, wstring_to_utf8(selected_folder).c_str(), sizeof(saveRootPath));
 					}
 				}
+
 				ImGui::SameLine();
 				ImGui::InputText(L("SAVES_ROOT_PATH"), saveRootPath, IM_ARRAYSIZE(saveRootPath));
 
@@ -1401,6 +1368,19 @@ int main(int, char**)
 				ImGui::Text(L("WIZARD_STEP2_TITLE"));
 				ImGui::TextWrapped(L("WIZARD_STEP2_DESC"));
 				ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+				if (ImGui::Button(u8"自动选择默认位置")) {
+					if (filesystem::exists("D:")) {
+						filesystem::create_directory(L"D:\\MineBackup备份文件夹");
+						strncpy_s(backupPath, wstring_to_utf8(L"D:\\MineBackup备份文件夹").c_str(), sizeof(backupPath));
+						page++;
+					}
+					else {
+						filesystem::create_directory(L"C:\\MineBackup备份文件夹");
+						strncpy_s(backupPath, wstring_to_utf8(L"C:\\MineBackup备份文件夹").c_str(), sizeof(backupPath));
+						page++;
+					}
+				}
 
 				if (ImGui::Button(L("BUTTON_SELECT_FOLDER"))) {
 					wstring selected_folder = SelectFolderDialog();
@@ -1487,17 +1467,14 @@ int main(int, char**)
 						// 3. 设置合理的默认值
 						initialConfig.zipFormat = L"7z";
 						initialConfig.zipLevel = 5;
-						initialConfig.keepCount = 10;
+						initialConfig.keepCount = 0;
 						initialConfig.backupMode = 1;
 						initialConfig.hotBackup = false;
 						initialConfig.backupBefore = false;
 						initialConfig.topMost = false;
 						initialConfig.manualRestore = true;
 						isSilence = false;
-						if (g_CurrentLang == "zh-CN")
-							initialConfig.zipFonts = L"C:\\Windows\\Fonts\\msyh.ttc";
-						else
-							initialConfig.zipFonts = L"C:\\Windows\\Fonts\\SegoeUI.ttf";
+						initialConfig.zipFonts = L"C:\\Windows\\Fonts\\msyh.ttc";
 
 						// 4. 保存到文件并切换到主应用界面
 						SaveConfigs();

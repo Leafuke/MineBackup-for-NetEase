@@ -89,7 +89,7 @@ std::map<std::string, std::map<std::string, std::string>> g_LangTable = {
 		{"RESTORE_POPUP_TITLE", u8"选择备份文件"},
 		{"RESTORE_PROMPT", u8"请为世界“%s”选择一个备份文件进行还原:"},
 		{"CHECK_FOR_UPDATES", u8"检查更新"},
-		{"WIZARD_WELCOME", u8"欢迎使用 MineBackup - 存档时光机 - 一个简单高效的存档管理工具"},
+		{"WIZARD_WELCOME", u8"欢迎使用 MineBackup - 存档时光机 - 网易特供版\nby mc_ortime/Leafuke\n\n声明：本程序基于我的开源代码 Minebackup(MIT协议) 修改而来，禁止商用或恶意使用。\n你可以加入我的世界小工具交流群490861436进行问题交流和反馈\n"},
 		{"WIZARD_INTRO1", u8"本向导将帮助您设置您的第一套备份配置。"},
 		{"WIZARD_INTRO2", u8"如果您有多个游戏启动器或存档根目录，"},
 		{"WIZARD_INTRO3", u8"可以在完成向导后，进入主界面的“设置”中添加更多独立的配置方案。"},
