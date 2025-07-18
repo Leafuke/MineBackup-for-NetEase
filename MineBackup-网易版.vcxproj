@@ -76,6 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -90,6 +91,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,15 +155,17 @@
     <ResourceCompile Include="MineBackup-网易版.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\favicon (1).ico" />
-    <Image Include="..\..\favicon (2).ico" />
-    <Image Include="..\..\favicon (3).ico" />
-    <Image Include="..\..\favicon (4).ico" />
-    <Image Include="..\..\favicon.ico" />
-    <Image Include="..\..\favicon5.ico" />
+    <None Include="7za.exe" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\MineBackup\7z.exe" />
+    <Image Include="..\..\..\Pictures\图标\mine10.ico" />
+    <Image Include="..\..\..\Pictures\图标\mine20.ico" />
+    <Image Include="..\..\..\Pictures\图标\mine30.ico" />
+    <Image Include="..\..\..\Pictures\图标\mine40.ico" />
+    <Image Include="..\..\..\Pictures\图标\mine50.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fontawesome-sp.otf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

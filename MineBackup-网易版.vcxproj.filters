@@ -90,26 +90,26 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\favicon5.ico">
+    <None Include="7za.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Pictures\图标\mine10.ico">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="..\..\favicon (4).ico">
+    <Image Include="..\..\..\Pictures\图标\mine20.ico">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="..\..\favicon (3).ico">
+    <Image Include="..\..\..\Pictures\图标\mine30.ico">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="..\..\favicon (2).ico">
+    <Image Include="..\..\..\Pictures\图标\mine40.ico">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="..\..\favicon (1).ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="..\..\favicon.ico">
+    <Image Include="..\..\..\Pictures\图标\mine50.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\MineBackup\7z.exe" />
+    <Font Include="fontawesome-sp.otf" />
   </ItemGroup>
 </Project>
