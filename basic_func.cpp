@@ -94,18 +94,18 @@ size_t CalculateFileHash(const filesystem::path& filepath) {
 // 作为全局变量，方便二者修改
 map<wstring, size_t> currentState;
 // 获取已更改的文件列表，并更新状态文件
+wstring utf8_to_wstring(const string& str);
 vector<filesystem::path> GetChangedFiles(const filesystem::path& worldPath, const filesystem::path& metadataPath) {
 	vector<filesystem::path> changedFiles;
 	map<wstring, size_t> lastState;
 	filesystem::path stateFilePath = metadataPath / L"backup_state.txt";
-
 	// 1. 读取上一次的状态
-	wifstream stateFileIn(stateFilePath);
+	ifstream stateFileIn(stateFilePath);
 	if (stateFileIn.is_open()) {
-		wstring path;
+		string path; // txt里千万不能有空格！
 		size_t hash;
 		while (stateFileIn >> path >> hash) {
-			lastState[path] = hash;
+			lastState[utf8_to_wstring(path)] = hash;
 		}
 		stateFileIn.close();
 	}
@@ -127,10 +127,11 @@ vector<filesystem::path> GetChangedFiles(const filesystem::path& worldPath, cons
 	}
 	return changedFiles;
 }
-// 新的函数，专门用于保存状态文件
+// 新的函数，专门用于保存状态文件 从filesystem版本修改为wofstream试图解决中文问题
 void SaveStateFile(const filesystem::path& metadataPath) {
 	filesystem::path stateFilePath = metadataPath / L"backup_state.txt";
 	wofstream stateFileOut(stateFilePath, ios::trunc);
+	stateFileOut.imbue(locale(stateFileOut.getloc(), new codecvt_byname<wchar_t, char, mbstate_t>("en_US.UTF-8")));
 	for (const auto& pair : currentState) {
 		stateFileOut << pair.first << L" " << pair.second << endl;
 	}
@@ -143,4 +144,34 @@ bool checkWorldName(const wstring& world, const vector<pair<wstring, wstring>>& 
 			return false;
 	}
 	return true;
+}
+
+wstring utf8_to_wstring(const string& str);
+// 开机自启功能终于来啦
+void SetAutoStart(const string& appName, const wstring& appPath, int configId, bool enable) {
+	HKEY hKey;
+	const wstring keyPath = L"Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+
+	// LSTATUS是Windows API中标准返回类型
+	LSTATUS status = RegOpenKeyExW(HKEY_CURRENT_USER, keyPath.c_str(), 0, KEY_WRITE, &hKey);
+
+	if (status == ERROR_SUCCESS) {
+		if (enable) {
+			wstring command = L"\"" + appPath + L"\" -specialcfg " + to_wstring(configId);
+			// RegSetValueExW 需要6个参数: HKEY, LPCWSTR, DWORD, DWORD, const BYTE*, DWORD
+			RegSetValueExW(
+				hKey,
+				utf8_to_wstring(appName).c_str(),
+				0,
+				REG_SZ,
+				(const BYTE*)command.c_str(),
+				(DWORD)((command.length() + 1) * sizeof(wchar_t))
+			);
+		}
+		else {
+			// RegDeleteValueW 需要2个参数: HKEY, LPCWSTR
+			RegDeleteValueW(hKey, utf8_to_wstring(appName).c_str());
+		}
+		RegCloseKey(hKey);
+	}
 }
