@@ -774,13 +774,8 @@ void ShowSettingsWindow() {
 			// Auto-scan worlds
 			if (ImGui::Button(L("BUTTON_SCAN_SAVES"))) {
 				cfg.worlds.clear();
-				/*if (filesystem::exists(cfg.saveRoot))
-					for (auto& e : filesystem::directory_iterator(cfg.saveRoot))
-						if (e.is_directory())
-							cfg.worlds.push_back({ e.path().filename().wstring(), L"" });*/
-
 				if (filesystem::exists(cfg.saveRoot)) {
-					for (const auto& entry : filesystem::recursive_directory_iterator("D:\\MCLDownload\\Game")) {
+					for (const auto& entry : filesystem::recursive_directory_iterator(GetRegistryValue("Software\\Netease\\MCLauncher", "DownloadPath") + "\\Game")) {
 						// 我们只关心 .config 文件
 						if (entry.path().string().rfind(".config") != string::npos) {
 
@@ -789,8 +784,6 @@ void ShowSettingsWindow() {
 
 							wstring guid = worldInfo.first;
 							wstring saveName = worldInfo.second;
-							wofstream out1("233333.txt");
-							out1 << guid<< " " << saveName << endl;
 
 							if (guid.empty() || saveName.empty()) {
 								continue; // 如果信息不完整则跳过
@@ -799,7 +792,8 @@ void ShowSettingsWindow() {
 							// 检查 GUID 对应的文件夹是否存在
 							filesystem::path worldFolderPath = filesystem::path(cfg.saveRoot) / guid;
 							// first 是 GUID (文件夹名), second 是 SaveName (描述)
-							cfg.worlds.push_back({ guid, saveName });
+							if(filesystem::exists(worldFolderPath))
+								cfg.worlds.push_back({ guid, saveName });
 						}
 					}
 				}
@@ -2198,9 +2192,25 @@ IGUI:
 
 						// 2. 自动扫描存档目录，填充世界列表
 						if (filesystem::exists(initialConfig.saveRoot)) {
-							for (auto& entry : filesystem::directory_iterator(initialConfig.saveRoot)) {
-								if (entry.is_directory()) {
-									initialConfig.worlds.push_back({ entry.path().filename().wstring(), L"" }); // 名称为文件夹名，描述为空
+							for (const auto& entry : filesystem::recursive_directory_iterator(GetRegistryValue("Software\\Netease\\MCLauncher", "DownloadPath") + "\\Game")) {
+								// 我们只关心 .config 文件
+								if (entry.path().string().rfind(".config") != string::npos) {
+
+									// 从 .config 文件获取 GUID 和 SaveName
+									pair<wstring, wstring> worldInfo = GetNeteaseWorldInfo(entry.path());
+
+									wstring guid = worldInfo.first;
+									wstring saveName = worldInfo.second;
+
+									if (guid.empty() || saveName.empty()) {
+										continue; // 如果信息不完整则跳过
+									}
+
+									// 检查 GUID 对应的文件夹是否存在
+									filesystem::path worldFolderPath = filesystem::path(initialConfig.saveRoot) / guid;
+									// first 是 GUID (文件夹名), second 是 SaveName (描述)
+									if (filesystem::exists(worldFolderPath))
+										initialConfig.worlds.push_back({ guid, saveName });
 								}
 							}
 						}
@@ -2349,8 +2359,8 @@ IGUI:
 				// 将 SaveName 作为主要显示内容
 				ImGui::TextWrapped("%s", desc_utf8.c_str());
 
-				// 将 GUID 文件夹名作为次要信息显示
-				ImGui::TextDisabled("Folder: %s", name_utf8.c_str());
+				//// 将 GUID 文件夹名作为次要信息显示
+				//ImGui::TextDisabled("Folder: %s", name_utf8.c_str());
 
 				// --- 第二行：时间和状态 ---
 				//wstring worldFolder = cfg.saveRoot + L"\\" + cfg.worlds[i].first; // 使用 GUID 路径
