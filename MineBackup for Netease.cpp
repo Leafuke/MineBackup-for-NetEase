@@ -482,10 +482,10 @@ void ShowSettingsWindow() {
 		new_cfg.cpuThreads = 0;
 		new_cfg.useLowPriority = false;
 		isSilence = false;
-		if (g_CurrentLang == "zh-CN")
+		if (filesystem::exists("C:\\Windows\\Fonts\\msyh.ttc"))
 			new_cfg.zipFonts = L"C:\\Windows\\Fonts\\msyh.ttc";
-		else
-			new_cfg.zipFonts = L"C:\\Windows\\Fonts\\SegoeUI.ttf";
+		else if (filesystem::exists("C:\\Windows\\Fonts\\msyh.ttf"))
+			new_cfg.zipFonts = L"C:\\Windows\\Fonts\\msyh.ttf";
 		new_cfg.themeColor = L"0.45 0.55 0.60 1.00";
 	}
 	ImGui::SameLine();
@@ -1933,7 +1933,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (isFirstRun) {
 		LANGID lang_id = GetUserDefaultUILanguage();
 		g_CurrentLang = "zh-CN";
-		Fontss = L"C:\\Windows\\Fonts\\msyh.ttc";
+		if (filesystem::exists("C:\\Windows\\Fonts\\msyh.ttc"))
+			Fontss = L"C:\\Windows\\Fonts\\msyh.ttc";
+		else if (filesystem::exists("C:\\Windows\\Fonts\\msyh.ttf"))
+			Fontss = L"C:\\Windows\\Fonts\\msyh.ttf";
 	}
 	ImFont* font = io.Fonts->AddFontFromFileTTF(wstring_to_utf8(Fontss).c_str(), 20.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
 
@@ -2228,7 +2231,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 						initialConfig.backupBefore = false;
 						initialConfig.manualRestore = true;
 						isSilence = false;
-						initialConfig.zipFonts = L"C:\\Windows\\Fonts\\msyh.ttc";
+						if (filesystem::exists("C:\\Windows\\Fonts\\msyh.ttc"))
+							initialConfig.zipFonts = L"C:\\Windows\\Fonts\\msyh.ttc";
+						else if (filesystem::exists("C:\\Windows\\Fonts\\msyh.ttf"))
+							initialConfig.zipFonts = L"C:\\Windows\\Fonts\\msyh.ttf";
 
 						// 4. 保存到文件并切换到主应用界面
 						SaveConfigs();
