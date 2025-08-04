@@ -15,6 +15,8 @@
 #include <atomic> // 用于线程安全的标志
 #include <mutex>  // 用于互斥锁
 #include <conio.h>
+#include <winhttp.h>
+#pragma comment(lib, "winhttp.lib")
 #define CONSTANT1 256
 #define CONSTANT2 512
 using namespace std;
@@ -27,6 +29,13 @@ static UINT                     g_ResizeWidth = 0, g_ResizeHeight = 0;
 static ID3D11RenderTargetView* g_mainRenderTargetView = nullptr;
 static std::vector<ID3D11ShaderResourceView*> worldIconTextures;
 static std::vector<int> worldIconWidths, worldIconHeights;
+const string CURRENT_VERSION = "1.6.7";
+bool g_CheckForUpdates = true;
+static atomic<bool> g_UpdateCheckDone(false);
+static atomic<bool> g_NewVersionAvailable(false);
+static string g_LatestVersionStr;
+static string g_ReleaseURL;
+static wstring g_configPath;
 
 // 声明辅助函数
 bool CreateDeviceD3D(HWND hWnd);
@@ -65,6 +74,7 @@ struct Config {
 	float backgroundImageAlpha = 0.5f;
 	int cpuThreads = 0; // 0 for auto/default
 	bool useLowPriority = false;
+	bool skipIfUnchanged = true;
 	vector<wstring> blacklist;
 };
 
@@ -173,6 +183,7 @@ pair<wstring, wstring> GetNeteaseWorldInfo(const filesystem::path& configPath) {
 	return { L"", L"" };
 }
 
+void CheckForUpdatesThread();
 void SetAutoStart(const string& appName, const wstring& appPath, int configId, bool enable);
 bool LoadTextureFromFile(const char* filename, ID3D11ShaderResourceView** out_srv, int* out_width, int* out_height);
 void SaveStateFile(const filesystem::path& metadataPath);
@@ -275,6 +286,7 @@ static void LoadConfigs(const string& filename = "config.ini") {
 				else if (key == L"SilenceMode") isSilence = (val != L"0");
 				else if (key == L"CpuThreads") cur->cpuThreads = stoi(val);
 				else if (key == L"UseLowPriority") cur->useLowPriority = (val != L"0");
+				else if (key == L"SkipIfUnchanged") cur->skipIfUnchanged = (val != L"0");
 				else if (key == L"BlacklistItem") cur->blacklist.push_back(val); // ADDED
 				else if (key == L"Theme") {
 					cur->theme = stoi(val);
@@ -332,6 +344,12 @@ static void LoadConfigs(const string& filename = "config.ini") {
 				else if (key == L"Language") {
 					g_CurrentLang = wstring_to_utf8(val);
 				}
+				else if (key == L"CheckForUpdates") {
+					g_CheckForUpdates = (val != L"0");
+				}
+				else if (key == L"ConfigPath") {
+					g_configPath = val;
+				}
 			}
 		}
 	}
@@ -349,7 +367,9 @@ static void SaveConfigs(const wstring& filename = L"config.ini") {
 	//out.imbue(locale(out.getloc(), new codecvt_utf8<wchar_t>));//将UTF8转为UTF，现在C++17也不对了……但是我们有define！
 	out << L"[General]\n";
 	out << L"CurrentConfig=" << currentConfigIndex << L"\n";
-	out << L"Language=" << utf8_to_wstring(g_CurrentLang) << L"\n\n";
+	out << L"Language=" << utf8_to_wstring(g_CurrentLang) << L"\n";
+	out << L"CheckForUpdates=" << (g_CheckForUpdates ? 1 : 0) << L"\n";
+	out << L"ConfigPath=" << g_configPath << L"\n\n";
 
 	for (auto& kv : configs) {
 		int idx = kv.first;
@@ -534,6 +554,8 @@ void ShowSettingsWindow() {
 		}
 		ImGui::EndPopup();
 	}
+
+	if (!specialSetting) ImGui::Checkbox(L("CHECK_FOR_UPDATES_ON_STARTUP"), &g_CheckForUpdates);
 
 	ImGui::Dummy(ImVec2(0.0f, 10.0f));
 	ImGui::SeparatorText(L("CURRENT_CONFIG_DETAILS"));
@@ -858,6 +880,11 @@ void ShowSettingsWindow() {
 			if (ImGui::IsItemHovered()) {
 				ImGui::SetTooltip(L("TIP_LOW_PRIORITY"));
 			}
+			ImGui::SameLine();
+			ImGui::Checkbox(L("SKIP_IF_UNCHANGED"), &cfg.skipIfUnchanged);
+			if (ImGui::IsItemHovered()) {
+				ImGui::SetTooltip(L("TIP_SKIP_IF_UNCHANGED"));
+			}
 			// CPU 线程
 			int max_threads = std::thread::hardware_concurrency();
 			ImGui::SliderInt(L("CPU_THREAD_COUNT"), &cfg.cpuThreads, 0, max_threads);
@@ -876,7 +903,7 @@ void ShowSettingsWindow() {
 			}
 			static int sel_bl_item = -1;
 
-			if (ImGui::BeginListBox("##blacklist", ImVec2(ImGui::GetContentRegionAvail().x, 5 * ImGui::GetTextLineHeightWithSpacing()))) {
+			if (ImGui::BeginListBox("##blacklist", ImVec2(ImGui::GetContentRegionAvail().x, 3 * ImGui::GetTextLineHeightWithSpacing()))) {
 				// 检查 blacklist 是否为空
 				if (cfg.blacklist.empty()) {
 					ImGui::Text(L("No items in blacklist")); // 显示空列表提示
@@ -1356,6 +1383,8 @@ bool RunCommandInBackground(wstring command, Console& console, bool useLowPriori
 		}
 		else {
 			console.AddLog(L("LOG_ERROR_CMD_FAILED"), exit_code);
+			if (exit_code == 1)
+				console.AddLog(L("LOG_ERROR_CMD_FAILED_HOTBACKUP_SUGGESTION"));
 		}
 	}
 	else {
@@ -1483,6 +1512,18 @@ void DoBackup(const Config config, const pair<wstring, wstring> world, Console& 
 
 	// 无论什么备份模式，都要获得状态，便于成功后更新状态
 	vector<filesystem::path> filesToBackup = GetChangedFiles(sourcePath, metadataFolder);
+	if (config.skipIfUnchanged) {
+		if (filesToBackup.empty()) {
+			console.AddLog(L("LOG_NO_CHANGE_FOUND"));
+			if (config.hotBackup && !sourcePath.empty()) {
+				console.AddLog(L("LOG_CLEAN_SNAPSHOT"));
+				error_code ec;
+				filesystem::remove_all(sourcePath, ec);
+				if (ec) console.AddLog(L("LOG_WARNING_CLEAN_SNAPSHOT"), ec.message().c_str());
+			}
+			return;
+		}
+	}
 
 	if (config.backupMode == 1 || forceFullBackup) // 普通备份
 	{
@@ -1632,6 +1673,25 @@ void DoRestore(const Config config, const wstring& worldName, const wstring& bac
 		wstring command = L"\"" + config.zipPath + L"\" x \"" + backup.wstring() + L"\" -o\"" + destinationFolder + L"\" -y";
 		RunCommandInBackground(command, console, config.useLowPriority);
 	}
+	console.AddLog(L("LOG_RESTORE_END_HEADER"));
+}
+
+void DoRestore2(const Config config, const wstring& worldName, const filesystem::path& fullBackupPath, Console& console) {
+	console.AddLog(L("LOG_RESTORE_START_HEADER"));
+	console.AddLog(L("LOG_RESTORE_PREPARE"), wstring_to_utf8(worldName).c_str());
+	console.AddLog(L("LOG_RESTORE_USING_FILE"), wstring_to_utf8(fullBackupPath.wstring()).c_str());
+
+	if (!filesystem::exists(config.zipPath)) {
+		console.AddLog(L("LOG_ERROR_7Z_NOT_FOUND"), wstring_to_utf8(config.zipPath).c_str());
+		console.AddLog(L("LOG_ERROR_7Z_NOT_FOUND_HINT"));
+		return;
+	}
+
+	wstring destinationFolder = config.saveRoot + L"\\" + worldName;
+
+	wstring command = L"\"" + config.zipPath + L"\" x \"" + fullBackupPath.wstring() + L"\" -o\"" + destinationFolder + L"\" -y";
+	RunCommandInBackground(command, console, config.useLowPriority);
+
 	console.AddLog(L("LOG_RESTORE_END_HEADER"));
 }
 
@@ -1830,6 +1890,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	LoadConfigs("config.ini");
+	if (g_CheckForUpdates) {
+		thread update_thread(CheckForUpdatesThread);
+		update_thread.detach();
+	}
 
 	if (specialConfigMode)
 	{
@@ -1862,7 +1926,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//ImGui_ImplWin32_EnableDpiAwareness();
 	WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
 	::RegisterClassExW(&wc);
-	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"MineBackup - v1.6.6", WS_OVERLAPPEDWINDOW, 100, 100, 1000, 800, nullptr, nullptr, wc.hInstance, nullptr);
+	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"MineBackup - v1.6.7", WS_OVERLAPPEDWINDOW, 100, 100, 1000, 800, nullptr, nullptr, wc.hInstance, nullptr);
 
 	// Initialize Direct3D
 	if (!CreateDeviceD3D(hwnd))
@@ -2211,7 +2275,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 									if (guid.empty() || saveName.empty()) {
 										continue; // 如果信息不完整则跳过
 									}
-
+									g_configPath = entry.path().wstring().substr(0 ,entry.path().wstring().find(L".com") + 4);
 									// 检查 GUID 对应的文件夹是否存在
 									filesystem::path worldFolderPath = filesystem::path(initialConfig.saveRoot) / guid;
 									// first 是 GUID (文件夹名), second 是 SaveName (描述)
@@ -2229,6 +2293,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 						initialConfig.hotBackup = false;
 						initialConfig.backupBefore = false;
 						initialConfig.manualRestore = true;
+						initialConfig.skipIfUnchanged = true;
 						isSilence = false;
 						if (filesystem::exists("C:\\Windows\\Fonts\\msyh.ttc"))
 							initialConfig.zipFonts = L"C:\\Windows\\Fonts\\msyh.ttc";
@@ -2469,6 +2534,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				}
 			}
 
+			if (ImGui::Button(u8"备份所有配置文件", ImVec2(buttonWidth, 30))) {
+				// 递归复制，并尝试忽略单个文件错误
+				auto copyOptions = filesystem::copy_options::recursive | filesystem::copy_options::overwrite_existing;
+				error_code ec;
+				filesystem::copy(g_configPath, cfg.backupPath, copyOptions, ec);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button(u8"还原所有配置文件", ImVec2(buttonWidth, 30))) {
+				// 递归复制，并尝试忽略单个文件错误
+				auto copyOptions = filesystem::copy_options::recursive | filesystem::copy_options::overwrite_existing;
+				error_code ec;
+				filesystem::copy(cfg.backupPath, g_configPath, copyOptions, ec);
+			}
+
 			if (no_world_selected) {
 				ImGui::EndDisabled();
 				ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), L("PROMPT_SELECT_WORLD"));
@@ -2550,6 +2629,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 				ImGui::Separator();
 
+				if (ImGui::Button(L("BUTTON_SELECT_CUSTOM_FILE"))) {
+					wstring selectedFile = SelectFileDialog();
+					if (!selectedFile.empty()) {
+						filesystem::path filePath(selectedFile);
+						wstring extension = filePath.extension().wstring();
+						// 合理的
+						if (extension == L".zip" || extension == L".7z") {
+							if (cfg.backupBefore) {
+								thread backup_thread(DoBackup, cfg, cfg.worlds[selectedWorldIndex], ref(console));
+								backup_thread.detach();
+							}
+							// 使用重载的 DoRestore 函数
+							thread restore_thread(DoRestore2, cfg, cfg.worlds[selectedWorldIndex].first, filePath, ref(console));
+							restore_thread.detach();
+							openRestorePopup = false;
+							ImGui::CloseCurrentPopup();
+						}
+						else {
+							MessageBoxW(hwnd, L"Error", utf8_to_wstring(L("ERROR_INVALID_ARCHIVE_TITLE")).c_str(), MB_OK | MB_ICONERROR);
+						}
+					}
+				}
+				ImGui::SameLine();
+
 				// 确认还原按钮
 				bool no_backup_selected = (selectedBackupIndex == -1);
 				if (no_backup_selected) ImGui::BeginDisabled();
@@ -2594,8 +2697,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					HINSTANCE result = ShellExecuteW(NULL, L"open", cfg.saveRoot.c_str(), NULL, NULL, SW_SHOWNORMAL);
 				}
 			}
-			ImGui::TextLinkOpenURL(L("CHECK_FOR_UPDATES"), "github.com/Leafuke/MineBackup/releases");
-			ImGui::TextLinkOpenURL(u8"论坛讨论", "mc.netease.com/thread-998871-1-1.html");
+			if (g_NewVersionAvailable) {
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.70f, 0.80f, 0.65f, 1.0f));
+				char link_text[CONSTANT1];
+				snprintf(link_text, sizeof(link_text), L(L("UPDATE_AVAILABLE_LINK_TEXT")), g_LatestVersionStr.c_str());
+				ImGui::TextLinkOpenURL(link_text, g_ReleaseURL.c_str());
+				ImGui::TextLinkOpenURL(L("UPDATE_AVAILABLE_DOWNLOAD"), "https://pan.baidu.com/s/1bJnA2TycW_cuR1P-8sbLRQ?pwd=mine");
+				ImGui::PopStyleColor();
+			}
+			else {
+				ImGui::TextLinkOpenURL(L("CHECK_FOR_UPDATES"), "https://github.com/Leafuke/MineBackup-for-NetEase/releases");
+			}
+
+			ImGui::TextLinkOpenURL(u8"论坛讨论", "https://mc.netease.com/thread-998871-1-1.html");
 			ImGui::TextLinkOpenURL(u8"群聊答疑", "490861436");
 			ShowSettingsWindow();
 			console.Draw(L("CONSOLE_TITLE"), &showMainApp);
@@ -2783,4 +2897,86 @@ bool LoadTextureFromFile(const char* filename, ID3D11ShaderResourceView** out_sr
 	stbi_image_free(image_data);
 
 	return true;
+}
+
+void CheckForUpdatesThread() {
+	DWORD dwSize = 0;
+	DWORD dwDownloaded = 0;
+	LPSTR pszOutBuffer;
+	string responseBody;
+	BOOL bResults = FALSE;
+	HINTERNET hSession = NULL, hConnect = NULL, hRequest = NULL;
+
+	hSession = WinHttpOpen(L"MineBackup Update Checker/1.0",
+		WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+		WINHTTP_NO_PROXY_NAME,
+		WINHTTP_NO_PROXY_BYPASS, 0);
+	if (!hSession) goto cleanup;
+
+	hConnect = WinHttpConnect(hSession, L"api.github.com",
+		INTERNET_DEFAULT_HTTPS_PORT, 0);
+	if (!hConnect) goto cleanup;
+
+	hRequest = WinHttpOpenRequest(hConnect, L"GET",
+		L"/repos/Leafuke/MineBackup/releases/latest",
+		NULL, WINHTTP_NO_REFERER,
+		WINHTTP_DEFAULT_ACCEPT_TYPES,
+		WINHTTP_FLAG_SECURE);
+	if (!hRequest) goto cleanup;
+
+	WinHttpSendRequest(hRequest,
+		L"User-Agent: MineBackup-Update-Checker\r\n",
+		-1L, WINHTTP_NO_REQUEST_DATA, 0, 0, 0);
+
+	bResults = WinHttpReceiveResponse(hRequest, NULL);
+	if (!bResults) goto cleanup;
+
+	do {
+		dwSize = 0;
+		if (!WinHttpQueryDataAvailable(hRequest, &dwSize)) break;
+		if (dwSize == 0) break;
+
+		pszOutBuffer = new char[dwSize + 1];
+		ZeroMemory(pszOutBuffer, dwSize + 1);
+
+		if (WinHttpReadData(hRequest, (LPVOID)pszOutBuffer, dwSize, &dwDownloaded))
+			responseBody.append(pszOutBuffer, dwDownloaded);
+
+		delete[] pszOutBuffer;
+
+	} while (dwSize > 0);
+
+	try {
+		string tagNameKey = "\"tag_name\":\"";
+		size_t start = responseBody.find(tagNameKey);
+		if (start != string::npos) {
+			start += tagNameKey.length();
+			size_t end = responseBody.find("\"", start);
+			string latestVersion = responseBody.substr(start, end - start);
+
+			// 对比版本号
+			if (latestVersion > "v" + CURRENT_VERSION) {
+				g_LatestVersionStr = latestVersion;
+				g_NewVersionAvailable = true;
+
+				// 找release地址
+				string urlKey = "\"html_url\":\"";
+				start = responseBody.find(urlKey);
+				if (start != string::npos) {
+					start += urlKey.length();
+					end = responseBody.find("\"", start);
+					g_ReleaseURL = responseBody.substr(start, end - start);
+				}
+			}
+		}
+	}
+	catch (...) {
+		// 暂时不处理
+	}
+
+cleanup:
+	if (hRequest) WinHttpCloseHandle(hRequest);
+	if (hConnect) WinHttpCloseHandle(hConnect);
+	if (hSession) WinHttpCloseHandle(hSession);
+	g_UpdateCheckDone = true;
 }

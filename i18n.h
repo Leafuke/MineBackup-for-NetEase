@@ -88,7 +88,7 @@ std::map<std::string, std::map<std::string, std::string>> g_LangTable = {
 		{"INTERVAL_MINUTES", u8"间隔时间 (分钟)"},
 		{"RESTORE_POPUP_TITLE", u8"选择备份文件"},
 		{"RESTORE_PROMPT", u8"请为世界“%s”选择一个备份文件进行还原:"},
-		{"CHECK_FOR_UPDATES", u8"检查更新"},
+		{"CHECK_FOR_UPDATES", u8"更新内容"},
 		{"WIZARD_WELCOME", u8"欢迎使用 MineBackup - 存档时光机 - 网易特供版\nby mc_ortime/Leafuke\n\n声明：本程序基于我的开源代码 Minebackup(MIT协议) 修改而来，禁止商用或恶意使用。\n你可以加入我的世界小工具交流群490861436进行问题交流和反馈\n"},
 		{"WIZARD_INTRO1", u8"本向导将帮助您设置您的第一套备份配置。"},
 		{"WIZARD_INTRO2", u8"如果您有多个游戏启动器或存档根目录，"},
@@ -217,7 +217,19 @@ std::map<std::string, std::map<std::string, std::string>> g_LangTable = {
 		{ "INFO_TASKS_INITIATED", "[信息] 任务已启动。正在后台运行。" },
 		{ "INFO_QUIT_SIGNAL_RECEIVED", "[信息] 收到退出信号。正在关闭所有任务..." },
 		{ "INFO_SWITCHING_TO_GUI_MODE", "[信息] 正在切换到 GUI 模式..." },
-		{ "INFO_ALL_TASKS_SHUT_DOWN", "[信息] 所有任务已关闭。正在退出。" }
+		{ "INFO_ALL_TASKS_SHUT_DOWN", "[信息] 所有任务已关闭。正在退出。" },
+		{ "RESTORE_STEPS", u8"[提示] 还原步骤 %zu/%zu: %s" },
+		{ "INFO_ALL_TASKS_SHUT_DOWN", "[信息] 所有任务已关闭。正在退出。" },
+		{ "LOG_ERROR_CMD_FAILED_HOTBACKUP_SUGGESTION", u8"[提示] 这很可能是因为游戏正在运行导致文件被占用。\n[建议] 请在“设置”中为当前配置启用“热备份”功能，或在退出游戏后进行备份。\n[提示] 请删除因此错误产生的不完整备份文件(避免意外使用)" },
+		{ "CONFIG_CONFLICT_TITLE", u8"配置冲突警告" },
+		{ "CONFIG_CONFLICT_MESSAGE", u8"检测到潜在的配置冲突！\n\n以下的配置方案存在将“同名世界”备份到“相同备份目录”的情况，这可能导致一个世界的存档覆盖另一个，引发存档丢失！\n\n建议为每个配置方案（尤其当它们用于不同游戏版本或启动器时）设置独立的备份文件夹。" },
+		{ "BUTTON_SELECT_CUSTOM_FILE", u8"从自定义文件还原" },
+		{ "ERROR_INVALID_ARCHIVE_MSG", u8"请选择一个有效的压缩文件 (例如 .7z 或 .zip)。" },
+		{ "SKIP_IF_UNCHANGED", u8"无变更时跳过备份" },
+		{ "TIP_SKIP_IF_UNCHANGED", u8"在备份前，检查存档自上次备份以来是否有任何变化。\n如果未检测到任何变化，将跳过本次备份。\n此功能对于所有备份模式均有效。" },
+		{ "CHECK_FOR_UPDATES_ON_STARTUP", u8"启动时检查更新" },
+		{ "UPDATE_AVAILABLE_DOWNLOAD", u8"\n下载新版本" },
+		{ "UPDATE_AVAILABLE_LINK_TEXT", u8"发现新版本\n %s\n点击查看" },
 	}}
 };
 std::string g_CurrentLang; // Default language
